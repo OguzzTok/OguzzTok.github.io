@@ -1,0 +1,15 @@
+# Metin dosyaları repo'da LF satır sonuyla durur (Windows ayarından bağımsız).
+* text=auto eol=lf
+
+# İkili dosyalar: Git asla satır sonlarını değiştirmez.
+*.pdf binary
+*.glb binary
+*.gltf binary
+*.jpg binary
+*.jpeg binary
+*.png binary
+*.webp binary
+*.gif binary
+*.ico binary
+*.zip binary
+*.woff2 binary
