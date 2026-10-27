@@ -33,9 +33,8 @@ sosyal linkler (GitHub, LinkedIn, Behance), 3 sertifika, ilk gerçek proje `ment
 - İngilizce biyografi ve hero tanıtım cümlesini Claude yazdı; kullanıcı değiştirmek isterse açık ol.
 - E-posta okul adresi (`posta.mu.edu.tr`): mezuniyette kapanabilir.
 
-**Örnek içerik** hâlâ sitede (başlığında "sample/örnek" geçen her şey): projeler `lantern-keeper`, `tiny-dungeon`,
-`lowpoly-crate`, `poster-series`; PDF'ler. Kullanıcı kendi içeriğini ekledikçe
-"Örnek içeriği temizleme" tarifiyle sil. `_template-*` klasörleri **silinmez** (draft şablonlar).
+**Örnek içerik:** örnek projeler ve sertifika silindi; sadece örnek CV/portfolyo PDF'leri kaldı (gerçekleri gelince
+değiştir). `npm run samples` çalıştırma: silinen örnek projelerin görsellerini yeniden üretir. `_template-*` klasörleri **silinmez** (draft şablonlar).
 
 ---
 
