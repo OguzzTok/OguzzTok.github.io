@@ -1,0 +1,15 @@
+---
+import { useTranslations, type Locale } from '../../lib/i18n';
+import type { Project } from '../../lib/projects';
+
+interface Props {
+  status: Project['data']['status'];
+  locale: Locale;
+  class?: string;
+}
+
+const { status, locale, class: className } = Astro.props;
+const t = useTranslations(locale);
+---
+
+<span class:list={['status-badge', className]} data-status={status}>{t(`status.${status}`)}</span>

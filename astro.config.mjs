@@ -34,5 +34,7 @@ export default defineConfig({
 
   vite: {
     plugins: [tailwindcss()],
+    // model-viewer (three.js dahil ~1 MB) sadece "3D Görüntüle"ye basınca yüklenir; uyarı gereksiz.
+    build: { chunkSizeWarningLimit: 1100 },
   },
 });

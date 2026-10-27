@@ -19,6 +19,12 @@
   --accent-on: #ffffff;
   --accent-soft: color-mix(in oklab, var(--accent) 22%, transparent);
   --shadow: 0 1px 0 color-mix(in oklab, var(--fg) 6%, transparent), 0 20px 40px -24px rgb(0 0 0 / 0.6);
+
+  /* Proje durum rozetleri (anlamsal renkler; vurgu rengi değil) */
+  --status-released: #5fd08a;
+  --status-in-progress: #f2b84b;
+  --status-prototype: #b3a998;
+  --status-jam: color-mix(in oklab, var(--accent) 55%, white);
   color-scheme: dark;
 }
 
@@ -62,6 +68,12 @@
     color: var(--fg);
     -webkit-text-size-adjust: 100%;
     scroll-padding-top: 5rem;
+    scrollbar-gutter: stable;
+  }
+
+  /* Lightbox açıkken arka plan kaymaz */
+  html.lb-open {
+    overflow: hidden;
   }
 
   body {
@@ -115,6 +127,43 @@
   }
   .btn-ghost {
     @apply border border-line text-fg hover:border-fg;
+  }
+
+  /* Yatay kaydırılan satır (mobil menü, sekmeler): çubuk gizli, sağ kenar solar */
+  .scroll-x-fade {
+    @apply overflow-x-auto;
+    scrollbar-width: none;
+    mask-image: linear-gradient(to right, black calc(100% - 2.5rem), transparent);
+  }
+  .scroll-x-fade::-webkit-scrollbar {
+    display: none;
+  }
+
+  .status-badge {
+    @apply inline-flex items-center gap-1.5 rounded-sm px-2 py-1 font-mono text-[0.68rem] font-medium tracking-[0.12em] uppercase;
+    background: color-mix(in oklab, var(--bg) 82%, transparent);
+    color: var(--fg);
+    backdrop-filter: blur(6px);
+  }
+  .status-badge::before {
+    content: '';
+    @apply size-1.5 rounded-full;
+    background: var(--dot);
+  }
+  .status-badge[data-status='released'] { --dot: var(--status-released); }
+  .status-badge[data-status='in-progress'] { --dot: var(--status-in-progress); }
+  .status-badge[data-status='prototype'] { --dot: var(--status-prototype); }
+  .status-badge[data-status='jam'] { --dot: var(--status-jam); }
+
+  /* Filtre çipleri ve etiketler */
+  .chip {
+    @apply inline-flex items-center rounded-sm border border-line px-2.5 py-1 font-mono text-xs tracking-wide text-muted transition-colors;
+  }
+  button.chip:hover {
+    @apply border-fg text-fg;
+  }
+  .chip[aria-pressed='true'] {
+    @apply border-accent bg-accent text-accent-on;
   }
 
   /* Okunabilir genişlikte uzun metin */

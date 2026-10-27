@@ -1,0 +1,50 @@
+---
+/**
+ * Etiket ve araç filtresi. JS gerektirir: JS kapalıyken gizli kalır (hidden), script açar.
+ * Her çip hangi kategorilerde geçtiğini bilir; sekmeye göre sadece ilgili çipler görünür.
+ */
+import { useTranslations, type Locale } from '../../lib/i18n';
+import type { Facet } from '../../lib/projects';
+
+interface Props {
+  tags: Facet[];
+  tools: Facet[];
+  locale: Locale;
+}
+
+const { tags, tools, locale } = Astro.props;
+const t = useTranslations(locale);
+const groups = [
+  { kind: 'tag', label: t('projects.filter.tags'), facets: tags },
+  { kind: 'tool', label: t('projects.filter.tools'), facets: tools },
+].filter((g) => g.facets.length > 0);
+---
+
+{
+  groups.length > 0 && (
+    <div class="mt-6 flex flex-col gap-3" data-filters hidden role="group" aria-label={t('projects.filter.label')}>
+      {groups.map((group) => (
+        <div class="flex items-baseline gap-3" data-filter-group>
+          <span class="eyebrow w-20 shrink-0">{group.label}</span>
+          <div class="scroll-x-fade -mr-4 flex gap-2 pr-4 sm:mr-0 sm:flex-wrap sm:pr-0 sm:[mask-image:none]">
+            {group.facets.map((facet) => (
+              <button
+                type="button"
+                class="chip shrink-0"
+                aria-pressed="false"
+                data-filter={group.kind}
+                data-value={facet.key}
+                data-categories={facet.categories.join(' ')}
+              >
+                {facet.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      ))}
+      <button type="button" class="link self-start text-sm" data-filter-clear hidden>
+        {t('projects.filter.clear')}
+      </button>
+    </div>
+  )
+}

@@ -1,0 +1,17 @@
+---
+import ProjectsPage from '../../../../components/projects/ProjectsPage.astro';
+import { getCategoryPages } from '../../../../lib/explorer';
+import { LOCALES, l, type Locale } from '../../../../lib/i18n';
+
+export async function getStaticPaths() {
+  const categories = await getCategoryPages();
+  return LOCALES.flatMap((lang) =>
+    categories.map((category) => ({ params: { lang, category: category.id }, props: { category } })),
+  );
+}
+
+const locale = Astro.params.lang as Locale;
+const { category } = Astro.props;
+---
+
+<ProjectsPage locale={locale} active={category.id} title={l(category.data.name, locale)} />

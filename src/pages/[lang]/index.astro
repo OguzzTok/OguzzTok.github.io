@@ -2,9 +2,9 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import LocalizedText from '../../components/ui/LocalizedText.astro';
 import SectionHeading from '../../components/ui/SectionHeading.astro';
+import ProjectsExplorer from '../../components/projects/ProjectsExplorer.astro';
 import { getSite } from '../../lib/content';
-import { LOCALES, l, useTranslations, type Locale } from '../../lib/i18n';
-import { getProjects } from '../../lib/projects';
+import { LOCALES, useTranslations, type Locale } from '../../lib/i18n';
 import { SECTIONS, sectionNumber } from '../../lib/sections';
 import { sectionPath } from '../../lib/urls';
 import { printTranslationReport } from '../../lib/translation-report';
@@ -17,7 +17,6 @@ export async function getStaticPaths() {
 const locale = Astro.params.lang as Locale;
 const t = useTranslations(locale);
 const site = await getSite();
-const projects = await getProjects();
 ---
 
 <BaseLayout locale={locale}>
@@ -37,16 +36,7 @@ const projects = await getProjects();
       <section class="mx-auto max-w-6xl scroll-mt-24 px-4 py-16 sm:px-6" aria-labelledby={`${section.id}-title`} id={section.id}>
         <SectionHeading number={sectionNumber(section.id)} title={t(section.title)} id={`${section.id}-title`} />
         {section.id === 'projects' ? (
-          // Geçici liste: Faz 2'de sekmeli grid ile değişecek. Fallback'i görmek için burada.
-          <ul class="grid gap-4 sm:grid-cols-2">
-            {projects.map((p) => (
-              <li class="rounded-sm border border-line bg-surface p-5">
-                <p class="eyebrow">{p.data.category.id} · {t(`status.${p.data.status}`)}</p>
-                <h3 class="mt-2 text-2xl">{l(p.data.title, locale)}</h3>
-                <LocalizedText value={p.data.summary} locale={locale} as="p" class="mt-2 text-muted data-fallback:italic" />
-              </li>
-            ))}
-          </ul>
+          <ProjectsExplorer locale={locale} />
         ) : (
           <p class="text-muted">{t('wip.notice')}</p>
         )}

@@ -1,0 +1,72 @@
+---
+/**
+ * Proje kartı. detail modunda geniş (16:9, iki kolon), lightbox modunda kare.
+ * Kartın tamamı tıklanabilir: başlıktaki link ::after ile kartı kaplar.
+ */
+import { Image } from 'astro:assets';
+import LocalizedText from '../ui/LocalizedText.astro';
+import StatusBadge from './StatusBadge.astro';
+import { l, localize, type Locale } from '../../lib/i18n';
+import { projectHref, tagKey, type Category, type Project } from '../../lib/projects';
+
+interface Props {
+  project: Project;
+  category: Category;
+  locale: Locale;
+  toolLabels: Map<string, string>;
+  /** Lightbox modunda JS kapalıyken açılacak büyük görsel */
+  fullImage?: string;
+  hidden?: boolean;
+  headingLevel?: 2 | 3;
+}
+
+const { project, category, locale, toolLabels, fullImage, hidden = false, headingLevel = 3 } = Astro.props;
+const { data } = project;
+const isDetail = category.data.mode === 'detail';
+const Heading = `h${headingLevel}` as 'h2' | 'h3';
+const title = localize(data.title, locale);
+const href = isDetail ? projectHref(project, category, locale) : (fullImage ?? projectHref(project, category, locale));
+
+const firstTool = data.tools[0] && toolLabels.get(data.tools[0].id);
+const meta = [l(category.data.name, locale), firstTool, data.date.getUTCFullYear()].filter(Boolean);
+---
+
+<article
+  class:list={['group relative flex flex-col', isDetail && 'md:col-span-2']}
+  data-project
+  data-slug={project.id}
+  data-category={category.id}
+  data-mode={category.data.mode}
+  data-tags={data.tags.map(tagKey).join(' ')}
+  data-tools={data.tools.map((t) => t.id).join(' ')}
+  hidden={hidden}
+>
+  <div class:list={['relative overflow-hidden rounded-sm bg-surface-2', isDetail ? 'aspect-video' : 'aspect-square']}>
+    <Image
+      src={data.cover.src}
+      alt={l(data.cover.alt, locale)}
+      widths={isDetail ? [640, 960, 1280, 1920] : [400, 640, 960]}
+      sizes={isDetail
+        ? '(min-width: 1024px) 760px, 100vw'
+        : '(min-width: 1024px) 370px, (min-width: 768px) 50vw, 100vw'}
+      class="size-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+      loading="lazy"
+    />
+    <StatusBadge status={data.status} locale={locale} class="absolute top-3 left-3" />
+  </div>
+
+  <div class="mt-4 flex flex-1 flex-col">
+    <Heading class:list={['font-medium', isDetail ? 'text-3xl md:text-4xl' : 'text-2xl']}>
+      <a
+        href={href}
+        class="decoration-1 underline-offset-4 group-hover:underline after:absolute after:inset-0 focus-visible:outline-none focus-visible:after:outline-2 focus-visible:after:outline-offset-4 focus-visible:after:outline-accent-text"
+        data-lightbox-open={isDetail ? undefined : project.id}
+        lang={title?.isFallback ? title.lang : undefined}
+      >
+        {title?.text}
+      </a>
+    </Heading>
+    <LocalizedText value={data.summary} locale={locale} as="p" class="mt-2 line-clamp-2 text-muted" />
+    <p class="eyebrow mt-auto pt-4">{meta.join(' · ')}</p>
+  </div>
+</article>

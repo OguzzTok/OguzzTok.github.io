@@ -12,7 +12,7 @@ Türkçe yaz, teknik terimleri İngilizce bırak.
 | Faz | İçerik | Durum |
 |---|---|---|
 | 1 | Kurulum, şemalar, örnek içerik, i18n, layout, tema | ✅ |
-| 2 | Proje sekmeleri, kartlar, filtre, öne çıkan kart, lightbox + 3D | ⏳ |
+| 2 | Proje sekmeleri, kartlar, filtre, öne çıkan kart, lightbox + 3D | ✅ |
 | 3 | Detay sayfası ve medya blokları | ⏳ |
 | 4 | Hero + istatistikler, hakkımda, sertifikalar, indirmeler, iletişim, 404 | ⏳ |
 | 5 | SEO, performans, Playwright, GitHub Actions deploy, boyut kontrolü | ⏳ |
@@ -46,9 +46,23 @@ Windows'ta Node `C:\Program Files\nodejs` altında. Bash'te `node` bulunamazsa:
   `i18n.ts` (t(), localize(), fallback), `urls.ts` (base uyumlu linkler), `projects.ts` (sıralama, doğrulama),
   `content.ts` (tekil veriler), `assets.ts` (glb/pdf URL ve boyut), `sections.ts` (ana sayfa bölüm sırası),
   `translation-report.ts` (build'de eksik çeviri raporu).
+  `explorer.ts` (proje gezgininin tüm verisi: sekmeler, filtreler, lightbox JSON), `lightbox.ts` (lightbox görselleri).
 - `src/components/` — küçük, tek sorumluluklu bileşenler. Bileşenlere sabit metin yazılmaz; metin
   `src/i18n/*.json` veya `src/data/` dosyalarından gelir.
-- `src/scripts/` — tarayıcıda çalışan vanilla TypeScript (tema, dil, ileride lightbox/filtre).
+  `projects/ProjectsExplorer.astro` hem ana sayfada (urlMode `none`) hem `/projects/` sayfalarında (urlMode `push`) kullanılır.
+- `src/scripts/` — tarayıcıda çalışan vanilla TypeScript:
+  `theme.ts`, `lang.ts`, `projects/` (durum + sekmeler + filtreler), `lightbox/` (PhotoSwipe + 3D, ilk tıklamada yüklenir).
+
+Projeler bölümü nasıl çalışır:
+- Her proje sayfası (`/en/projects/`, `/en/projects/<kategori>/`) **tüm** kartları içerir; aktif sekmede olmayanlar
+  `hidden` gelir. JS kapalıyken sekmeler normal linktir. JS açılınca sekmeler ARIA tablist olur, sayfa yenilenmeden
+  süzer ve adres çubuğunu günceller (`history.pushState`). Boş kategorinin sekmesi ve sayfası üretilmez.
+- Filtre: her gruptan (etiket, araç) en fazla bir seçim; sekme değişince sıfırlanır. JS kapalıysa gizli.
+- Lightbox: görünen lightbox kartlarının tüm görselleri tek listede; ok tuşları projeler arası geçer.
+  `?item=<slug>` linki doğrudan açar. 3D açıkken ok/ESC tuşları modele aittir, ESC önce 3D'yi kapatır.
+  JS kapalıysa kart büyük WebP görsele linktir.
+- Paket boyutları: sekme/filtre ~6 KB her sayfada; PhotoSwipe ~65 KB ilk tıklamada; model-viewer ~1 MB
+  sadece "3D Görüntüle"ye basınca.
 
 Kurallar:
 - İç linkler asla elle `"/..."` yazılmaz: `pagePath()`, `sectionPath()`, `withBase()` kullanılır (base değişebilir).

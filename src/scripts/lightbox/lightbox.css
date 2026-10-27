@@ -1,0 +1,299 @@
+/*
+ * Lightbox görünümü. Tema ne olursa olsun koyu (görseller ön planda).
+ * Panel genişliği ve kırılım noktası lightbox/index.ts ile aynı: 380px, 1024px.
+ */
+.pswp--portfolio {
+  --lb-bg: #0e0d0c;
+  --lb-panel: #161412;
+  --lb-fg: #ede6da;
+  --lb-muted: #a8a091;
+  --lb-line: rgb(237 230 218 / 0.12);
+  --pswp-bg: var(--lb-bg);
+  --pswp-placeholder-bg: #1c1a18;
+  --pswp-icon-color: var(--lb-fg);
+  --pswp-icon-color-secondary: var(--lb-bg);
+  --pswp-icon-stroke-color: var(--lb-bg);
+  --pswp-error-text-color: var(--lb-muted);
+  color: var(--lb-fg);
+  font-family: 'Instrument Sans Variable', ui-sans-serif, system-ui, sans-serif;
+}
+
+.pswp--portfolio :focus-visible {
+  outline: 2px solid color-mix(in oklab, var(--accent) 55%, white);
+  outline-offset: 2px;
+}
+
+/* ---------- Bilgi paneli ---------- */
+
+.lb-info {
+  position: absolute;
+  z-index: 5;
+  inset: 0 0 0 auto;
+  width: 380px;
+  padding: 72px 28px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background: var(--lb-panel);
+  border-left: 1px solid var(--lb-line);
+}
+
+.lb-eyebrow,
+.lb-counter,
+.lb-nav__label,
+.lb-meta dt {
+  font-family: 'JetBrains Mono Variable', ui-monospace, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--lb-muted);
+}
+
+.lb-title {
+  margin-top: 0.5rem;
+  font-family: 'Fraunces Variable', Georgia, serif;
+  font-size: 2rem;
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+}
+
+.lb-counter {
+  margin-top: 0.5rem;
+  min-height: 1em;
+}
+
+.lb-summary {
+  color: var(--lb-muted);
+  line-height: 1.6;
+}
+
+.lb-meta {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.5rem 1rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--lb-line);
+}
+.lb-meta dt {
+  padding-top: 0.15em;
+}
+.lb-meta dd {
+  font-size: 0.95rem;
+}
+
+.lb-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  align-items: center;
+  margin-top: 1.25rem;
+}
+
+.lb-3d {
+  padding: 0.6rem 1.1rem;
+  border-radius: 2px;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+.lb-3d[aria-pressed='true'] {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--lb-fg);
+}
+
+.lb-link {
+  font-size: 0.9rem;
+  color: color-mix(in oklab, var(--accent) 55%, white);
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+}
+
+.lb-toggle {
+  display: none;
+}
+
+.lb-nav {
+  margin-top: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--lb-line);
+}
+.lb-nav__btn {
+  min-width: 0; /* uzun başlık ızgara hücresini taşırmasın; ellipsis devreye girsin */
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  text-align: left;
+  padding: 0.5rem 0;
+}
+.lb-nav__btn[data-dir='1'] {
+  text-align: right;
+}
+.lb-nav__title {
+  font-size: 0.9rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.lb-nav__btn:hover .lb-nav__title {
+  text-decoration: underline;
+}
+
+/* ---------- Küçük resimler ---------- */
+
+.lb-thumbs {
+  position: absolute;
+  z-index: 5;
+  left: 0;
+  right: 380px;
+  bottom: 0;
+  height: 96px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.lb-thumbs[hidden] {
+  display: none;
+}
+.lb-thumb {
+  flex: none;
+  width: 64px;
+  height: 64px;
+  border-radius: 2px;
+  overflow: hidden;
+  opacity: 0.5;
+  border: 2px solid transparent;
+  transition: opacity 0.2s;
+}
+.lb-thumb:hover {
+  opacity: 0.85;
+}
+.lb-thumb[aria-current='true'] {
+  opacity: 1;
+  border-color: var(--accent);
+}
+.lb-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Sağ ok paneli kapatmasın */
+.pswp--portfolio .pswp__button--arrow--next {
+  right: 380px;
+}
+
+/* ---------- 3D görünüm ---------- */
+
+.lb-model {
+  position: absolute;
+  z-index: 4;
+  inset: 0 380px 0 0;
+  background: radial-gradient(circle at 50% 40%, #2a2724, var(--lb-bg) 70%);
+}
+.lb-3d-open .pswp__button--arrow,
+.lb-3d-open .pswp__button--zoom,
+.lb-3d-open .lb-thumbs {
+  display: none;
+}
+.lb-model__stage,
+.lb-model model-viewer {
+  width: 100%;
+  height: 100%;
+}
+.lb-model model-viewer {
+  --poster-color: transparent;
+  background: transparent;
+}
+.lb-model__status {
+  position: absolute;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  font-size: 0.85rem;
+  color: var(--lb-muted);
+  pointer-events: none;
+  white-space: nowrap;
+}
+.lb-model__close {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  padding: 0.5rem 0.9rem;
+  border-radius: 2px;
+  background: rgb(14 13 12 / 0.7);
+  box-shadow: inset 0 0 0 1px var(--lb-line);
+  font-size: 0.9rem;
+}
+
+/* ---------- Mobil / tablet ---------- */
+
+@media (max-width: 1023px) {
+  .lb-info {
+    inset: auto 0 96px 0;
+    width: auto;
+    max-height: 62vh;
+    padding: 14px 16px 12px;
+    gap: 0.75rem;
+    border-left: 0;
+    border-top: 1px solid var(--lb-line);
+  }
+  .lb-head {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    column-gap: 1rem;
+  }
+  .lb-head > :not(.lb-toggle) {
+    grid-column: 1;
+  }
+  .lb-title {
+    font-size: 1.35rem;
+    margin-top: 0.25rem;
+  }
+  .lb-counter {
+    display: none;
+  }
+  .lb-toggle {
+    display: block;
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    padding: 0.45rem 0.8rem;
+    border-radius: 2px;
+    box-shadow: inset 0 0 0 1px var(--lb-line);
+    font-size: 0.85rem;
+  }
+  .lb-info[data-expanded='false'] .lb-body,
+  .lb-info[data-expanded='false'] .lb-nav {
+    display: none;
+  }
+  .lb-nav {
+    margin-top: 0;
+  }
+  .lb-thumbs {
+    right: 0;
+    background: var(--lb-panel);
+    justify-content: flex-start;
+  }
+  /* Tek görselli projede şerit yok: panel en alta iner */
+  .pswp--portfolio:has(.lb-thumbs[hidden]) .lb-info {
+    bottom: 0;
+  }
+  .lb-model {
+    inset: 0 0 176px 0;
+  }
+  .pswp--portfolio .pswp__button--arrow--next {
+    right: 0;
+  }
+}

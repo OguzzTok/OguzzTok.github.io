@@ -1,0 +1,51 @@
+---
+/**
+ * Kategori sekmeleri. JS kapalıyken normal linkler (her sekmenin kendi sayfası var);
+ * JS açılınca scripts/projects/tabs.ts bunları ARIA tablist'e çevirir ve sayfa yenilemeden süzer.
+ */
+import { plural, useTranslations, type Locale } from '../../lib/i18n';
+import type { Tab } from '../../lib/explorer';
+import { categoryPath } from '../../lib/projects';
+
+interface Props {
+  tabs: Tab[];
+  active: string;
+  locale: Locale;
+  siteName: string;
+}
+
+const { tabs, active, locale, siteName } = Astro.props;
+const t = useTranslations(locale);
+const pageTitle = (tab: Tab) => `${tab.id === 'all' ? t('section.projects') : tab.label} — ${siteName}`;
+---
+
+<div class="scroll-x-fade -mx-4 border-b border-line px-4 sm:mx-0 sm:px-0">
+  <div class="flex gap-7 md:gap-10" data-tablist data-label={t('projects.tabs.label')}>
+    {
+      tabs.map((tab) => (
+        <a
+          href={categoryPath(locale, tab.id)}
+          id={`tab-${tab.id}`}
+          data-tab={tab.id}
+          data-title={pageTitle(tab)}
+          aria-current={tab.id === active ? 'page' : undefined}
+          class="tab relative -mb-px flex shrink-0 items-start gap-1 border-b-2 border-transparent pt-1 pb-3 font-display text-xl whitespace-nowrap text-muted transition-colors hover:text-fg md:text-2xl"
+        >
+          <span>{tab.label}</span>
+          <span class="font-mono text-xs text-accent-text" aria-hidden="true">
+            {tab.count}
+          </span>
+          <span class="sr-only">({plural(t, 'projects.count', tab.count)})</span>
+        </a>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .tab[aria-current='page'],
+  .tab[aria-selected='true'] {
+    color: var(--fg);
+    border-color: var(--accent-fill);
+  }
+</style>

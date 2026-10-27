@@ -1,0 +1,90 @@
+---
+/**
+ * Projeler bölümü: öne çıkan kart + sekmeler + filtre + grid + lightbox verisi.
+ * Hem ana sayfada hem /projects/ sayfalarında kullanılır.
+ * Tüm kartlar her sayfada vardır; aktif sekmede olmayanlar `hidden` gelir (JS'siz de doğru görünür).
+ */
+import FeaturedProject from './FeaturedProject.astro';
+import FilterBar from './FilterBar.astro';
+import ProjectCard from './ProjectCard.astro';
+import TabBar from './TabBar.astro';
+import { getSite } from '../../lib/content';
+import { getExplorerData } from '../../lib/explorer';
+import { useTranslations, type Locale } from '../../lib/i18n';
+import { ALL } from '../../lib/projects';
+
+interface Props {
+  locale: Locale;
+  /** Başlangıçta seçili sekme: 'all' veya kategori id'si */
+  active?: string;
+  /** push: sekme değişince adres çubuğu da değişir (/projects/ sayfaları) · none: ana sayfa */
+  urlMode?: 'push' | 'none';
+  headingLevel?: 2 | 3;
+  eagerFeatured?: boolean;
+}
+
+const { locale, active = ALL, urlMode = 'none', headingLevel = 3, eagerFeatured = false } = Astro.props;
+const t = useTranslations(locale);
+const site = await getSite();
+const { projects, categoryById, toolLabels, tabs, facets, featured, lightbox } = await getExplorerData(locale);
+
+const fullImageOf = new Map(lightbox.projects.map((p) => [p.slug, p.images[0]?.src]));
+const isVisible = (categoryId: string) => active === ALL || categoryId === active;
+const initialCount = projects.filter((p) => isVisible(p.data.category.id)).length;
+
+// </script> kaçışı: JSON içinde "<" geçerse script etiketi erken kapanmasın.
+const lightboxJson = JSON.stringify(lightbox).replaceAll('<', '\\u003c');
+---
+
+<div data-explorer data-active={active} data-url-mode={urlMode}>
+  {
+    featured && (
+      <FeaturedProject
+        project={featured}
+        category={categoryById.get(featured.data.category.id)!}
+        locale={locale}
+        fullImage={fullImageOf.get(featured.id)}
+        headingLevel={headingLevel}
+        eager={eagerFeatured}
+      />
+    )
+  }
+
+  <TabBar tabs={tabs} active={active} locale={locale} siteName={site.name} />
+  <FilterBar tags={facets.tags} tools={facets.tools} locale={locale} />
+
+  <p
+    class="eyebrow mt-8"
+    aria-live="polite"
+    data-results
+    data-one={t('projects.count.one')}
+    data-other={t('projects.count.other')}
+  >
+    {t(initialCount === 1 ? 'projects.count.one' : 'projects.count.other', { count: initialCount })}
+  </p>
+
+  <div id="project-grid" class="mt-6 grid gap-x-6 gap-y-14 [grid-auto-flow:dense] md:grid-cols-2 lg:grid-cols-3" data-project-grid>
+    {
+      projects.map((project) => (
+        <ProjectCard
+          project={project}
+          category={categoryById.get(project.data.category.id)!}
+          locale={locale}
+          toolLabels={toolLabels}
+          fullImage={fullImageOf.get(project.id)}
+          hidden={!isVisible(project.data.category.id)}
+          headingLevel={headingLevel}
+        />
+      ))
+    }
+  </div>
+
+  <p class="mt-6 text-muted" data-empty hidden>{t('projects.empty')}</p>
+
+  <script type="application/json" data-lightbox-data set:html={lightboxJson} />
+</div>
+
+<script>
+  import { initProjectExplorers } from '../../scripts/projects';
+  initProjectExplorers();
+</script>

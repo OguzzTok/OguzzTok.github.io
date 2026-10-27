@@ -29,7 +29,12 @@ export function useTranslations(locale: Locale) {
   };
 }
 
-export type Localized = { en?: string | undefined; tr?: string | undefined } | undefined;
+/** Tekil/çoğul: plural(t, 'projects.count', 3) → "3 projects" (anahtarlar: <taban>.one / <taban>.other) */
+export function plural(t: ReturnType<typeof useTranslations>, base: string, count: number): string {
+  return t(`${base}.${count === 1 ? 'one' : 'other'}` as UiKey, { count });
+}
+
+export type Localized ={ en?: string | undefined; tr?: string | undefined } | undefined;
 
 export interface LocalizedText {
   text: string;

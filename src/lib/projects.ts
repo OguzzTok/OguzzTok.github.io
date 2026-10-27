@@ -4,6 +4,7 @@
  */
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { otherLocale, type Locale } from './i18n';
+import { pagePath } from './urls';
 
 export type Project = CollectionEntry<'projects'>;
 export type Category = CollectionEntry<'categories'>;
@@ -61,6 +62,61 @@ export async function getCategoryOf(project: Project): Promise<Category> {
   const category = categories.find((c) => c.id === project.data.category.id);
   if (!category) throw new Error(`${project.id}: kategori bulunamadı`);
   return category;
+}
+
+/** "Tümü" sekmesinin anahtarı (kategori id'leriyle çakışmaz: id'ler tire/harf). */
+export const ALL = 'all';
+
+export function categoryPath(locale: Locale, categoryId: string): string {
+  return categoryId === ALL ? pagePath(locale, 'projects') : pagePath(locale, 'projects', categoryId);
+}
+
+/** Karta tıklayınca gidilecek adres: detail → detay sayfası, lightbox → kategori sayfasında ?item= */
+export function projectHref(project: Project, category: Category, locale: Locale): string {
+  return category.data.mode === 'detail'
+    ? pagePath(locale, 'projects', category.id, project.id)
+    : `${categoryPath(locale, category.id)}?item=${project.id}`;
+}
+
+/** Öne çıkan proje: `featured: true` olanların sıralamadaki ilki. */
+export function getFeatured(projects: Project[]): Project | undefined {
+  return projects.find((p) => p.data.featured);
+}
+
+export function countByCategory(projects: Project[]): Map<string, number> {
+  const counts = new Map<string, number>([[ALL, projects.length]]);
+  for (const p of projects) counts.set(p.data.category.id, (counts.get(p.data.category.id) ?? 0) + 1);
+  return counts;
+}
+
+/** Filtre seçeneği: etiket veya araç; hangi kategorilerde geçtiği (sekmeye göre gizlemek için). */
+export interface Facet {
+  key: string;
+  label: string;
+  categories: string[];
+}
+
+/** Etiketler büyük/küçük harfe duyarsız eşleşir: "Low-poly" ve "low-poly" aynı filtredir. */
+export const tagKey = (tag: string) => tag.trim().toLowerCase().replace(/\s+/g, '-');
+
+export function collectFacets(projects: Project[], toolLabels: Map<string, string>) {
+  const build = (pairs: { key: string; label: string; category: string }[]): Facet[] => {
+    const map = new Map<string, Facet>();
+    for (const { key, label, category } of pairs) {
+      const facet = map.get(key) ?? { key, label, categories: [] };
+      if (!facet.categories.includes(category)) facet.categories.push(category);
+      map.set(key, facet);
+    }
+    return [...map.values()].sort((a, b) => a.label.localeCompare(b.label));
+  };
+  return {
+    tags: build(projects.flatMap((p) => p.data.tags.map((t) => ({ key: tagKey(t), label: t, category: p.data.category.id })))),
+    tools: build(
+      projects.flatMap((p) =>
+        p.data.tools.map((t) => ({ key: t.id, label: toolLabels.get(t.id) ?? t.id, category: p.data.category.id })),
+      ),
+    ),
+  };
 }
 
 /** Detay metni (en.md / tr.md); istenen dil yoksa diğer dile düşer. */
