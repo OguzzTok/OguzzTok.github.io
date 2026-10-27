@@ -13,7 +13,7 @@ Türkçe yaz, teknik terimleri İngilizce bırak.
 |---|---|---|
 | 1 | Kurulum, şemalar, örnek içerik, i18n, layout, tema | ✅ |
 | 2 | Proje sekmeleri, kartlar, filtre, öne çıkan kart, lightbox + 3D | ✅ |
-| 3 | Detay sayfası ve medya blokları | ⏳ |
+| 3 | Detay sayfası ve medya blokları | ✅ |
 | 4 | Hero + istatistikler, hakkımda, sertifikalar, indirmeler, iletişim, 404 | ⏳ |
 | 5 | SEO, performans, Playwright, GitHub Actions deploy, boyut kontrolü | ⏳ |
 | 6 | Bu rehberin tamamlanması, README'de GitHub Pages kurulumu | ⏳ |
@@ -63,6 +63,17 @@ Projeler bölümü nasıl çalışır:
   JS kapalıysa kart büyük WebP görsele linktir.
 - Paket boyutları: sekme/filtre ~6 KB her sayfada; PhotoSwipe ~65 KB ilk tıklamada; model-viewer ~1 MB
   sadece "3D Görüntüle"ye basınca.
+
+Detay sayfası (`src/pages/[lang]/projects/[category]/[slug].astro`, sadece detail modundaki kategoriler):
+- Sıra: geri linki → rozet/etiketler/başlık/özet/aksiyon butonları → hero (kapak; `links.trailer` varsa tıklayınca
+  oynayan fragman) → metin (`en.md`/`tr.md`) → `gallery` alanı ("Galeri") → `blocks` (yazıldığı sırayla) → önceki/sonraki.
+  Yanda künye (`components/detail/SpecSheet.astro`), mobilde metnin üstünde.
+- Metindeki her `## ` başlığı otomatik numaralanır (01, 02, 03). Build, 3'ten farklı bölüm sayısında uyarı verir.
+- YouTube / itch.io / 3D: tıklanana kadar dış siteye istek gitmez (`scripts/embeds.ts`). YouTube `youtube-nocookie` ile açılır.
+- Bileşenler: `components/detail/` (sayfa parçaları), `components/media/` (bloklar; `MediaBlocks.astro` dağıtıcı).
+  Script'ler: `embeds.ts`, `gallery.ts` (galeri lightbox'ı), `copy.ts` (kopyala butonları, e-posta için de),
+  `model-viewer.ts` (lightbox ve model bloğunun ortak 3D yükleyicisi).
+- Mobil düzen kuralı: tek kolonlu grid'lerde `grid-cols-[minmax(0,1fr)]` kullan; yoksa uzun kod satırı sayfayı yatay taşırır.
 
 Kurallar:
 - İç linkler asla elle `"/..."` yazılmaz: `pagePath()`, `sectionPath()`, `withBase()` kullanılır (base değişebilir).
@@ -117,9 +128,18 @@ Her tariften sonra: **Son adımlar** bölümünü uygula.
 2. Görseller: `cover.jpg` (**16:9**, detay sayfasının büyük görseli ve kart kapağı), galeri `01.jpg`…
 3. `index.md`: `draft: false`, zorunlu alanlar yukarıdaki gibi, `category: games`.
    - `links`: `steam`, `itch`, `github`, `trailer` (YouTube linki veya id), `website`. Boşlar görünmez.
+     Sıra ve ilk dolu olanın birincil buton olması: itch → steam → fragman → github → website.
+     `trailer` doluysa hero görseli tıklayınca oynayan videoya dönüşür ve "Fragmanı izle" butonu çıkar.
    - `spec`: `genre`, `engine`, `platforms`, `team` (1 = solo), `duration`, `publisher`. Boşlar gizlenir.
-   - `blocks` (opsiyonel, yazıldığı sırayla metnin altında): `gallery`, `youtube`, `model`, `code`
-     (`file: ./snippets/X.cs`, `lang: csharp`), `itch` (itch.io "Embed game" iframe `src` adresi), `download` (dosya klasörde; ad ve boyut otomatik).
+     Künyede ayrıca durum, yayın tarihi (`date`) ve araçlar (`tools`) otomatik gösterilir.
+   - `gallery`: metnin hemen altında "Galeri" başlığıyla gösterilir.
+   - `blocks` (opsiyonel, yazıldığı sırayla galerinin altında):
+     - `gallery` → `images: [{ src, alt }]`, opsiyonel `caption: {en, tr}`
+     - `youtube` → `id` (video linki de olur), opsiyonel `title`
+     - `model` → `src: ./model.glb`, opsiyonel `caption`
+     - `code` → `file: ./snippets/X.cs`, `lang` (Shiki dil adı: `csharp`, `cpp`, `gdscript`, `python`, `hlsl`, `glsl`, `json`…), opsiyonel `caption`
+     - `itch` → `url` (itch.io sayfasında "Embed game" → iframe'in `src` adresi), `width`, `height` (oyunun boyutu), opsiyonel `title`
+     - `download` → `file: ./dosya.pdf` (.pdf/.zip/.glb), opsiyonel `label`; ad, tür ve boyut otomatik
    - Şablondaki örnek `youtube`/`itch` bloklarını gerçek değerlerle değiştir ya da sil.
 4. `en.md` ve `tr.md`: üç `##` başlık, bu sırayla: **What it is / What I did / What I learned** ve
    **Nedir / Ben ne yaptım / Ne öğrendim**. Markdown destekli. Takım projesinde "Ben ne yaptım"

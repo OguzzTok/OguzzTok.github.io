@@ -1,0 +1,53 @@
+---
+/**
+ * Görsel galerisi: küçük resimler; tıklayınca lightbox (PhotoSwipe, ilk tıklamada yüklenir).
+ * JS kapalıysa her küçük resim büyük görsele linktir.
+ */
+import { Image } from 'astro:assets';
+import { l, type Locale, type Localized } from '../../lib/i18n';
+import { lightboxImage } from '../../lib/lightbox';
+
+interface Props {
+  images: { src: ImageMetadata; alt: Localized }[];
+  locale: Locale;
+  caption?: string;
+}
+
+const { images, locale, caption } = Astro.props;
+const items = await Promise.all(
+  images.map(async (img) => ({ img, full: await lightboxImage(img.src, l(img.alt, locale)) })),
+);
+const single = items.length === 1;
+---
+
+<figure class="my-12">
+  <div class:list={['grid gap-3', !single && 'grid-cols-2 md:grid-cols-3']} data-gallery>
+    {
+      items.map(({ img, full }) => (
+        <a
+          href={full.src}
+          class="group block overflow-hidden rounded-sm bg-surface-2"
+          data-gallery-item
+          data-width={full.width}
+          data-height={full.height}
+          data-srcset={full.srcset}
+        >
+          <Image
+            src={img.src}
+            alt={full.alt}
+            widths={single ? [768, 1152, 1536] : [320, 480, 720]}
+            sizes={single ? '(min-width: 1024px) 760px, 100vw' : '(min-width: 1024px) 250px, 50vw'}
+            class:list={['w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]', !single && 'aspect-video']}
+            loading="lazy"
+          />
+        </a>
+      ))
+    }
+  </div>
+  {caption && <figcaption class="eyebrow mt-3">{caption}</figcaption>}
+</figure>
+
+<script>
+  import { initGalleries } from '../../scripts/gallery';
+  initGalleries();
+</script>

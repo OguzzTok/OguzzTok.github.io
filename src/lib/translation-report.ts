@@ -45,7 +45,17 @@ async function collectIssues(): Promise<Issue[]> {
   };
 
   const projects = await getProjects();
-  const texts = new Set((await getCollection('projectTexts')).map((t) => t.id));
+  const textEntries = await getCollection('projectTexts');
+  const texts = new Set(textEntries.map((t) => t.id));
+
+  // Detay metni üç bölümden oluşur (Nedir / Ne yaptım / Ne öğrendim): her biri bir "## " başlığı.
+  const published = new Set(projects.map((p) => p.id));
+  for (const text of textEntries) {
+    const [slug] = text.id.split('/');
+    if (!published.has(slug!)) continue;
+    const sections = (text.body?.match(/^## /gm) ?? []).length;
+    if (sections !== 3) issues.push({ where: `projects/${text.id}.md`, detail: `3 bölüm (##) bekleniyor, ${sections} bulundu` });
+  }
   const detailCategories = new Set((await getCategories()).filter((c) => c.data.mode === 'detail').map((c) => c.id));
 
   for (const p of projects) {
@@ -74,12 +84,12 @@ export async function printTranslationReport() {
 
   const issues = await collectIssues();
   if (issues.length === 0) {
-    console.info('\n[çeviri] Tüm içerik iki dilde de tam. ✓\n');
+    console.info('\n[içerik] Tüm içerik iki dilde de tam. ✓\n');
     return;
   }
   const width = Math.max(...issues.map((i) => i.where.length));
   const lines = issues.map((i) => `  ${i.where.padEnd(width)}  ${i.detail}`);
   console.warn(
-    `\n[çeviri] ${issues.length} eksik çeviri (diğer dile düşülüyor):\n${lines.join('\n')}\n`,
+    `\n[içerik] ${issues.length} uyarı (eksik çeviriler diğer dile düşülüyor):\n${lines.join('\n')}\n`,
   );
 }

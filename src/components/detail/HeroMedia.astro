@@ -1,0 +1,33 @@
+---
+/** Detay sayfasının büyük görseli. Fragman varsa kapak, tıklayınca yüklenen videoya dönüşür. */
+import { Image } from 'astro:assets';
+import YouTubeEmbed from '../media/YouTubeEmbed.astro';
+import type { Locale } from '../../lib/i18n';
+
+interface Props {
+  cover: { src: ImageMetadata; alt: string };
+  trailer?: string;
+  title: string;
+  locale: Locale;
+}
+
+const { cover, trailer, title, locale } = Astro.props;
+---
+
+<div class="mt-12 shadow-card">
+  {
+    trailer ? (
+      <YouTubeEmbed video={trailer} title={title} locale={locale} cover={cover} id="trailer" eager />
+    ) : (
+      <Image
+        src={cover.src}
+        alt={cover.alt}
+        widths={[768, 1152, 1536, 2304]}
+        sizes="(min-width: 1152px) 1104px, 100vw"
+        class="aspect-video w-full rounded-sm bg-surface-2 object-cover"
+        loading="eager"
+        fetchpriority="high"
+      />
+    )
+  }
+</div>

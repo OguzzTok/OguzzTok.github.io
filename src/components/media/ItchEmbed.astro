@@ -1,0 +1,45 @@
+---
+/**
+ * itch.io oyun embed'i. Butona basınca yüklenir (oyunlar ağır olabilir). Yüklenince "Tam ekran" butonu çıkar.
+ * JS kapalıysa itch.io'daki embed adresine gider.
+ */
+import { useTranslations, type Locale } from '../../lib/i18n';
+
+interface Props {
+  url: string;
+  width: number;
+  height: number;
+  title: string;
+  locale: Locale;
+}
+
+const { url, width, height, title, locale } = Astro.props;
+const t = useTranslations(locale);
+---
+
+<figure class="my-12">
+  <div
+    class="group relative overflow-hidden rounded-sm border border-line bg-surface-2"
+    style={`aspect-ratio: ${width} / ${height}`}
+    data-embed
+    data-embed-src={url}
+    data-embed-title={title}
+    data-embed-allow="autoplay; fullscreen; gamepad; gyroscope; accelerometer"
+  >
+    <a
+      href={url}
+      target="_blank"
+      rel="noopener"
+      class="absolute inset-0 flex flex-col items-center justify-center gap-3 p-4 text-center"
+      data-embed-trigger
+    >
+      <span class="btn btn-primary">▶ {t('media.itchPlay')}</span>
+      <span class="text-sm text-muted">{t('media.itchNote')}</span>
+    </a>
+  </div>
+  <div class="mt-3 flex justify-end">
+    <button type="button" class="btn btn-ghost py-1.5 text-xs" data-embed-fullscreen hidden>
+      ⛶ {t('media.fullscreen')}
+    </button>
+  </div>
+</figure>

@@ -1,0 +1,45 @@
+---
+/** Yandaki "Künye / Spec sheet". Boş alanlar gösterilmez. */
+import StatusBadge from '../projects/StatusBadge.astro';
+import { formatDate, l, useTranslations, type Locale } from '../../lib/i18n';
+import type { Project } from '../../lib/projects';
+
+interface Props {
+  project: Project;
+  locale: Locale;
+  toolLabels: Map<string, string>;
+}
+
+const { project, locale, toolLabels } = Astro.props;
+const { data } = project;
+const { spec } = data;
+const t = useTranslations(locale);
+
+const team = spec.team === undefined ? undefined : spec.team === 1 ? t('spec.solo') : t('spec.people', { count: spec.team });
+const rows = [
+  { label: t('spec.released'), value: formatDate(data.date, locale, { year: 'numeric', month: 'long', day: 'numeric' }) },
+  { label: t('spec.genre'), value: l(spec.genre, locale) },
+  { label: t('spec.engine'), value: spec.engine },
+  { label: t('spec.platforms'), value: spec.platforms.join(', ') },
+  { label: t('spec.team'), value: team },
+  { label: t('spec.duration'), value: l(spec.duration, locale) },
+  { label: t('spec.publisher'), value: spec.publisher },
+  { label: t('spec.tools'), value: data.tools.map((tool) => toolLabels.get(tool.id) ?? tool.id).join(', ') },
+].filter((row) => row.value);
+---
+
+<aside class="rounded-sm border border-line bg-surface p-6 lg:sticky lg:top-24" aria-labelledby="spec-title">
+  <h2 id="spec-title" class="eyebrow">{t('spec.title')}</h2>
+  <dl class="mt-5 grid grid-cols-[auto_1fr] gap-x-5 gap-y-3 text-sm">
+    <dt class="text-muted">{t('spec.status')}</dt>
+    <dd><StatusBadge status={data.status} locale={locale} class="-my-1 border border-line" /></dd>
+    {
+      rows.map((row) => (
+        <>
+          <dt class="text-muted">{row.label}</dt>
+          <dd>{row.value}</dd>
+        </>
+      ))
+    }
+  </dl>
+</aside>

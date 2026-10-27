@@ -119,6 +119,19 @@ export function collectFacets(projects: Project[], toolLabels: Map<string, strin
   };
 }
 
+/** Detay sayfası altındaki önceki/sonraki: aynı kategoride, sıralamaya göre (başa sarmaz). */
+export function getNeighbors(project: Project, projects: Project[]) {
+  const siblings = projects.filter((p) => p.data.category.id === project.data.category.id);
+  const index = siblings.findIndex((p) => p.id === project.id);
+  return { prev: siblings[index - 1], next: siblings[index + 1] };
+}
+
+/** YouTube linki veya id → id. Tanınmazsa olduğu gibi döner (id kabul edilir). */
+export function youtubeId(value: string): string {
+  const match = value.match(/(?:youtu\.be\/|[?&]v=|\/embed\/|\/shorts\/)([\w-]{6,})/);
+  return match?.[1] ?? value.trim();
+}
+
 /** Detay metni (en.md / tr.md); istenen dil yoksa diğer dile düşer. */
 export async function getProjectText(slug: string, locale: Locale) {
   const texts = await getCollection('projectTexts');

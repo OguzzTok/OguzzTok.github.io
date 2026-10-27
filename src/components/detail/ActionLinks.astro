@@ -1,0 +1,43 @@
+---
+/** Detay sayfası aksiyon butonları. Sadece dolu linkler görünür; ilki birincil buton. */
+import { useTranslations, type Locale, type UiKey } from '../../lib/i18n';
+import { youtubeId, type Project } from '../../lib/projects';
+
+interface Props {
+  links: Project['data']['links'];
+  locale: Locale;
+}
+
+const { links, locale } = Astro.props;
+const t = useTranslations(locale);
+
+const trailer = links.trailer ? `https://www.youtube.com/watch?v=${youtubeId(links.trailer)}` : undefined;
+const actions = (
+  [
+    { key: 'action.itch', href: links.itch },
+    { key: 'action.steam', href: links.steam },
+    { key: 'action.trailer', href: trailer, trailer: true },
+    { key: 'action.github', href: links.github },
+    { key: 'action.website', href: links.website },
+  ] satisfies { key: UiKey; href: string | undefined; trailer?: boolean }[]
+).filter((a) => a.href);
+---
+
+{
+  actions.length > 0 && (
+    <div class="mt-8 flex flex-wrap gap-3">
+      {actions.map((action, i) => (
+        <a
+          href={action.href}
+          target="_blank"
+          rel="noopener"
+          class:list={['btn', i === 0 ? 'btn-primary' : 'btn-ghost']}
+          data-play-trailer={'trailer' in action ? '' : undefined}
+        >
+          {t(action.key)}
+          <span aria-hidden="true">{'trailer' in action ? '▶' : '↗'}</span>
+        </a>
+      ))}
+    </div>
+  )
+}

@@ -1,0 +1,40 @@
+---
+/**
+ * Kopyala butonu. `text` verilirse onu, `target` (CSS seçici) verilirse o elemanın metnini kopyalar.
+ * Davranış: scripts/copy.ts
+ */
+import { useTranslations, type Locale } from '../../lib/i18n';
+
+interface Props {
+  locale: Locale;
+  text?: string;
+  target?: string;
+  label?: string;
+  class?: string;
+}
+
+const { locale, text, target, label, class: className } = Astro.props;
+const t = useTranslations(locale);
+const idle = label ?? t('copy.code');
+---
+
+<button
+  type="button"
+  class:list={['inline-flex items-center gap-1.5 rounded-sm px-2 py-1 font-mono text-xs text-muted transition-colors hover:text-fg', className]}
+  data-copy={text}
+  data-copy-target={target}
+  data-copy-idle={idle}
+  data-copy-done={t('copy.done')}
+  data-copy-failed={t('copy.failed')}
+>
+  <svg viewBox="0 0 24 24" class="size-3.5" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+    <rect x="9" y="9" width="11" height="11" rx="1"></rect>
+    <path d="M5 15V5a1 1 0 0 1 1-1h10"></path>
+  </svg>
+  <span data-copy-label>{idle}</span>
+</button>
+
+<script>
+  import { initCopyButtons } from '../../scripts/copy';
+  initCopyButtons();
+</script>

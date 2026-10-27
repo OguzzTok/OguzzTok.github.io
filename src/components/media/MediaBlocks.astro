@@ -1,0 +1,55 @@
+---
+/** index.md'deki `blocks` listesini yazıldığı sırayla gösterir. Yeni blok tipi: şemaya + buraya. */
+import CodeBlock from './CodeBlock.astro';
+import DownloadBlock from './DownloadBlock.astro';
+import GalleryBlock from './GalleryBlock.astro';
+import ItchEmbed from './ItchEmbed.astro';
+import ModelBlock from './ModelBlock.astro';
+import YouTubeEmbed from './YouTubeEmbed.astro';
+import { projectFile, projectSource } from '../../lib/assets';
+import { l, type Locale } from '../../lib/i18n';
+import type { Project } from '../../lib/projects';
+
+interface Props {
+  project: Project;
+  locale: Locale;
+}
+
+const { project, locale } = Astro.props;
+const title = l(project.data.title, locale);
+---
+
+{
+  project.data.blocks.map((block, i) => {
+    switch (block.type) {
+      case 'gallery':
+        return <GalleryBlock images={block.images} locale={locale} caption={l(block.caption, locale) || undefined} />;
+      case 'youtube':
+        return (
+          <figure class="my-12">
+            <YouTubeEmbed video={block.id} title={l(block.title, locale) || title} locale={locale} />
+            {block.title && <figcaption class="eyebrow mt-3">{l(block.title, locale)}</figcaption>}
+          </figure>
+        );
+      case 'model':
+        return (
+          <ModelBlock url={projectFile(project.id, block.src).url} title={title} locale={locale} caption={l(block.caption, locale) || undefined} />
+        );
+      case 'code':
+        return (
+          <CodeBlock
+            id={`code-${i}`}
+            code={projectSource(project.id, block.file)}
+            lang={block.lang}
+            fileName={block.file.split('/').pop()!}
+            locale={locale}
+            caption={l(block.caption, locale) || undefined}
+          />
+        );
+      case 'itch':
+        return <ItchEmbed url={block.url} width={block.width} height={block.height} title={l(block.title, locale) || title} locale={locale} />;
+      case 'download':
+        return <DownloadBlock file={projectFile(project.id, block.file)} label={l(block.label, locale) || undefined} locale={locale} />;
+    }
+  })
+}

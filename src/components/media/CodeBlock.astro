@@ -1,0 +1,34 @@
+---
+/** Kod parçası: Shiki ile renklendirilir (build sırasında), kopyala butonu var. */
+import { Code } from 'astro:components';
+import type { ComponentProps } from 'astro/types';
+import CopyButton from '../ui/CopyButton.astro';
+import type { Locale } from '../../lib/i18n';
+
+interface Props {
+  code: string;
+  lang: string;
+  fileName: string;
+  locale: Locale;
+  caption?: string;
+  id: string;
+}
+
+const { code, lang, fileName, locale, caption, id } = Astro.props;
+---
+
+<figure class="my-12 overflow-hidden rounded-sm border border-line">
+  <div class="flex items-center justify-between gap-4 border-b border-line bg-surface px-4 py-2">
+    <span class="font-mono text-xs text-muted">{fileName}</span>
+    <CopyButton locale={locale} target={`#${id} pre`} />
+  </div>
+  <div id={id} class="code-block text-sm">
+    <Code
+      code={code.trimEnd()}
+      lang={lang as ComponentProps<typeof Code>['lang']}
+      themes={{ dark: 'vitesse-dark', light: 'vitesse-light' }}
+      defaultColor="dark"
+    />
+  </div>
+  {caption && <figcaption class="eyebrow border-t border-line bg-surface px-4 py-2">{caption}</figcaption>}
+</figure>

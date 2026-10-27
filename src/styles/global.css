@@ -166,6 +166,74 @@
     @apply border-accent bg-accent text-accent-on;
   }
 
+  /*
+   * Detay sayfası metni (en.md / tr.md). Her "## " başlığı otomatik numaralanır: 01 Nedir, 02 Ben ne yaptım…
+   */
+  .project-body {
+    counter-reset: section;
+    @apply max-w-[68ch] text-[1.0625rem] leading-relaxed;
+  }
+  .project-body h2 {
+    counter-increment: section;
+    @apply mt-16 mb-5 flex items-baseline gap-4 text-3xl font-medium first:mt-0 md:text-4xl;
+  }
+  .project-body h2::before {
+    content: counter(section, decimal-leading-zero);
+    @apply font-mono text-sm font-normal tracking-normal text-accent-text;
+  }
+  .project-body h3 {
+    @apply mt-10 mb-3 text-2xl font-medium;
+  }
+  .project-body p,
+  .project-body ul,
+  .project-body ol,
+  .project-body blockquote,
+  .project-body pre {
+    @apply mt-4;
+  }
+  .project-body ul {
+    @apply list-disc pl-6 marker:text-accent-text;
+  }
+  .project-body ol {
+    @apply list-decimal pl-6 marker:text-muted;
+  }
+  .project-body li + li {
+    @apply mt-1.5;
+  }
+  .project-body a {
+    @apply text-accent-text underline decoration-1 underline-offset-4 hover:decoration-2;
+  }
+  .project-body em {
+    @apply text-muted;
+  }
+  .project-body strong {
+    @apply font-semibold;
+  }
+  .project-body blockquote {
+    @apply border-l-2 border-accent pl-5 text-muted italic;
+  }
+  .project-body :not(pre) > code {
+    @apply rounded-sm bg-surface-2 px-1.5 py-0.5 font-mono text-[0.9em];
+  }
+  .project-body pre {
+    @apply overflow-x-auto rounded-sm border border-line p-4 text-sm;
+  }
+
+  /* Kod blokları (Shiki): koyu tema varsayılan, açık temada açık renkler */
+  .code-block pre {
+    @apply overflow-x-auto p-5 leading-relaxed;
+  }
+  /* Kod gerçek karakterleriyle görünsün: "=>" tek bir ⇒ sembolüne dönüşmesin */
+  .code-block pre,
+  .project-body code {
+    font-variant-ligatures: none;
+  }
+  [data-theme='light'] .astro-code,
+  [data-theme='light'] .astro-code span {
+    color: var(--shiki-light) !important;
+    background-color: var(--shiki-light-bg) !important;
+  }
+
   /* Okunabilir genişlikte uzun metin */
   .prose-body {
     @apply max-w-[68ch] text-fg;

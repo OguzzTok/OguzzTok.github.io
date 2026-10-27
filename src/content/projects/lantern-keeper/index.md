@@ -37,6 +37,9 @@ blocks:
     images:
       - src: ./03.jpg
         alt: { en: Final scene, tr: Final sahnesi }
+  - type: model
+    src: ./lantern.glb
+    caption: { en: Lantern prop (sample cube), tr: Fener objesi (örnek küp) }
   - type: code
     file: ./snippets/LanternController.cs
     lang: csharp

@@ -1,7 +1,8 @@
 /**
- * Lightbox içindeki 3D görünüm. <model-viewer> (three.js içerir, büyük) sadece ilk açılışta indirilir.
+ * Lightbox içindeki 3D görünüm katmanı. Modeli yükleyen kısım ortak: scripts/model-viewer.ts.
  */
 import type { LightboxLabels } from '../../lib/explorer';
+import { mountModelViewer } from '../model-viewer';
 
 export interface ModelView {
   readonly isOpen: boolean;
@@ -29,7 +30,6 @@ export function openModelView(host: HTMLElement, { url, title, labels, onClose }
   const status = document.createElement('p');
   status.className = 'lb-model__status';
   status.setAttribute('aria-live', 'polite');
-  status.textContent = labels['lightbox.loading3d'];
 
   const close = document.createElement('button');
   close.type = 'button';
@@ -41,23 +41,8 @@ export function openModelView(host: HTMLElement, { url, title, labels, onClose }
   host.append(overlay);
   host.classList.add('lb-3d-open'); // oklar ve küçük resimler 3D'de gizlenir (lightbox.css)
 
-  import('@google/model-viewer')
-    .then(() => {
-      if (!open) return;
-      const viewer = document.createElement('model-viewer');
-      viewer.setAttribute('src', url);
-      viewer.setAttribute('alt', title);
-      viewer.setAttribute('camera-controls', '');
-      viewer.setAttribute('auto-rotate', '');
-      viewer.setAttribute('touch-action', 'none');
-      viewer.setAttribute('shadow-intensity', '1');
-      viewer.setAttribute('environment-image', 'neutral');
-      viewer.setAttribute('interaction-prompt', 'none');
-      viewer.addEventListener('load', () => (status.textContent = labels['lightbox.hint3d']));
-      viewer.addEventListener('error', () => (status.textContent = labels['lightbox.error3d']));
-      stage.append(viewer);
-    })
-    .catch(() => (status.textContent = labels['lightbox.error3d']));
+  const text = { loading: labels['lightbox.loading3d'], ready: labels['lightbox.hint3d'], error: labels['lightbox.error3d'] };
+  void mountModelViewer(stage, status, url, title, text, 'none');
 
   return {
     get isOpen() {

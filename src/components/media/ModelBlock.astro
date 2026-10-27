@@ -1,0 +1,33 @@
+---
+/** Sayfa içi 3D model. Model ve görüntüleyici sadece butona basınca yüklenir. JS kapalıysa .glb indirme linki. */
+import { useTranslations, type Locale } from '../../lib/i18n';
+
+interface Props {
+  url: string;
+  title: string;
+  locale: Locale;
+  caption?: string;
+}
+
+const { url, title, locale, caption } = Astro.props;
+const t = useTranslations(locale);
+---
+
+<figure class="my-12">
+  <div
+    class="relative aspect-[4/3] overflow-hidden rounded-sm border border-line bg-[radial-gradient(circle_at_50%_40%,var(--surface-2),var(--bg)_75%)] md:aspect-video"
+    data-model-embed
+    data-model-url={url}
+    data-model-title={title}
+    data-loading={t('lightbox.loading3d')}
+    data-ready={t('lightbox.hint3d')}
+    data-error={t('lightbox.error3d')}
+  >
+    <div class="absolute inset-0" data-model-stage></div>
+    <a href={url} class="btn btn-primary absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" data-model-trigger>
+      {t('media.modelLoad')}
+    </a>
+    <p class="pointer-events-none absolute bottom-3 left-1/2 -translate-x-1/2 text-xs whitespace-nowrap text-muted" aria-live="polite" data-model-status></p>
+  </div>
+  {caption && <figcaption class="eyebrow mt-3">{caption}</figcaption>}
+</figure>

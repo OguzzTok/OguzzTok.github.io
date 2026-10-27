@@ -1,0 +1,92 @@
+---
+/** Detay sayfası (detail modundaki kategoriler: oyunlar, tool'lar). */
+import { render } from 'astro:content';
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import ActionLinks from '../../../../components/detail/ActionLinks.astro';
+import HeroMedia from '../../../../components/detail/HeroMedia.astro';
+import ProjectNav from '../../../../components/detail/ProjectNav.astro';
+import SpecSheet from '../../../../components/detail/SpecSheet.astro';
+import GalleryBlock from '../../../../components/media/GalleryBlock.astro';
+import MediaBlocks from '../../../../components/media/MediaBlocks.astro';
+import LocalizedText from '../../../../components/ui/LocalizedText.astro';
+import StatusBadge from '../../../../components/projects/StatusBadge.astro';
+import { getTools } from '../../../../lib/content';
+import { LOCALES, l, localize, useTranslations, type Locale } from '../../../../lib/i18n';
+import { getCategories, getNeighbors, getProjectText, getProjects } from '../../../../lib/projects';
+import { pagePath } from '../../../../lib/urls';
+
+export async function getStaticPaths() {
+  const [projects, categories] = await Promise.all([getProjects(), getCategories()]);
+  const detailCategories = new Map(categories.filter((c) => c.data.mode === 'detail').map((c) => [c.id, c]));
+  return LOCALES.flatMap((lang) =>
+    projects
+      .filter((p) => detailCategories.has(p.data.category.id))
+      .map((project) => ({
+        params: { lang, category: project.data.category.id, slug: project.id },
+        props: { project, category: detailCategories.get(project.data.category.id)!, projects },
+      })),
+  );
+}
+
+const locale = Astro.params.lang as Locale;
+const { project, category, projects } = Astro.props;
+const { data } = project;
+const t = useTranslations(locale);
+const toolLabels = await getTools();
+
+const title = localize(data.title, locale);
+const text = await getProjectText(project.id, locale);
+const { Content } = text ? await render(text.entry) : { Content: undefined };
+const { prev, next } = getNeighbors(project, projects);
+const cover = { src: data.cover.src, alt: l(data.cover.alt, locale) };
+---
+
+<BaseLayout locale={locale} title={title?.text} description={l(data.summary, locale)} image={data.cover.src}>
+  <article class="mx-auto max-w-6xl px-4 pt-10 sm:px-6 md:pt-14">
+    <a href={pagePath(locale, 'projects')} class="eyebrow hover:text-fg">← {t('detail.back')}</a>
+
+    <header class="mt-8">
+      <div class="flex flex-wrap items-center gap-2">
+        <StatusBadge status={data.status} locale={locale} class="border border-line" />
+        <span class="eyebrow ml-1">{l(category.data.name, locale)}</span>
+        {data.tags.map((tag) => <span class="chip">{tag}</span>)}
+      </div>
+      <h1 class="mt-5 text-5xl font-medium md:text-7xl" lang={title?.isFallback ? title.lang : undefined}>{title?.text}</h1>
+      <LocalizedText value={data.summary} locale={locale} as="p" class="mt-5 max-w-[60ch] text-lg text-muted md:text-xl" />
+      <ActionLinks links={data.links} locale={locale} />
+    </header>
+
+    <HeroMedia cover={cover} trailer={data.links.trailer} title={title?.text ?? project.id} locale={locale} />
+
+    <!-- minmax(0,1fr): uzun kod satırları kolonu genişletmesin, kod bloğu kendi içinde kaysın -->
+    <div class="mt-16 grid grid-cols-[minmax(0,1fr)] gap-12 lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-16">
+      <SpecSheet project={project} locale={locale} toolLabels={toolLabels} />
+
+      <div class="lg:order-first">
+        {
+          text?.isFallback && (
+            <p class="mb-8 rounded-sm border border-line bg-surface px-4 py-3 text-sm text-muted" role="note">
+              {t('detail.fallback')}
+            </p>
+          )
+        }
+        {
+          Content && (
+            <div class="project-body" lang={text?.isFallback ? text.lang : undefined}>
+              <Content />
+            </div>
+          )
+        }
+        {data.gallery.length > 0 && <GalleryBlock images={data.gallery} locale={locale} caption={t('media.gallery')} />}
+        <MediaBlocks project={project} locale={locale} />
+      </div>
+    </div>
+
+    <ProjectNav prev={prev} next={next} category={category} locale={locale} />
+  </article>
+</BaseLayout>
+
+<script>
+  import { initEmbeds } from '../../../../scripts/embeds';
+  initEmbeds();
+</script>

@@ -1,0 +1,46 @@
+---
+/** Detay sayfasının altında aynı kategorideki önceki / sonraki proje. */
+import { Image } from 'astro:assets';
+import { l, useTranslations, type Locale } from '../../lib/i18n';
+import { projectHref, type Category, type Project } from '../../lib/projects';
+
+interface Props {
+  prev?: Project;
+  next?: Project;
+  category: Category;
+  locale: Locale;
+}
+
+const { prev, next, category, locale } = Astro.props;
+const t = useTranslations(locale);
+const items = [
+  prev && { project: prev, label: t('detail.prev'), dir: 'prev' as const },
+  next && { project: next, label: t('detail.next'), dir: 'next' as const },
+].filter((x) => Boolean(x)) as { project: Project; label: string; dir: 'prev' | 'next' }[];
+---
+
+{
+  items.length > 0 && (
+    <nav class="mt-24 grid gap-6 border-t border-line pt-10 sm:grid-cols-2" aria-label={`${t('detail.prev')} / ${t('detail.next')}`}>
+      {items.map(({ project, label, dir }) => (
+        <a
+          href={projectHref(project, category, locale)}
+          rel={dir}
+          data-project-nav={dir}
+          class:list={['group flex items-center gap-4', dir === 'next' && 'sm:col-start-2 sm:flex-row-reverse sm:text-right']}
+        >
+          <Image
+            src={project.data.cover.src}
+            alt=""
+            width={160}
+            class="aspect-video w-28 shrink-0 rounded-sm object-cover opacity-80 transition-opacity group-hover:opacity-100"
+          />
+          <span>
+            <span class="eyebrow block">{dir === 'prev' ? `← ${label}` : `${label} →`}</span>
+            <span class="mt-1 block font-display text-2xl group-hover:underline">{l(project.data.title, locale)}</span>
+          </span>
+        </a>
+      ))}
+    </nav>
+  )
+}
