@@ -8,11 +8,10 @@
   year: 2022
   label: { en: years making games, tr: yıldır oyun yapıyorum }
 
-- id: released
+- id: games
   kind: count
-  status: released
   category: games
-  label: { en: games released, tr: yayınlanan oyun }
+  label: { en: games, tr: oyun }
 
 - id: jams
   kind: count
