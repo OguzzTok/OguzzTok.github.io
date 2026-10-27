@@ -23,11 +23,11 @@ const site = await getSite();
 
     <!-- Mobilde ikinci satıra iner ve yatay kaydırılır; JS gerektirmez. -->
     <nav aria-label={t('nav.label')} class="order-last -mx-4 w-[calc(100%+2rem)] md:order-none md:mx-0 md:ml-auto md:w-auto">
-      <ul class="scroll-x-fade flex gap-5 px-4 pb-3 text-sm whitespace-nowrap md:gap-7 md:p-0 md:[mask-image:none]">
+      <ul class="scroll-x-fade flex gap-5 px-4 pb-1.5 text-sm whitespace-nowrap md:gap-7 md:p-0 md:[mask-image:none]">
         {
           SECTIONS.map((s) => (
             <li>
-              <a href={sectionPath(locale, s.id)} class="text-muted transition-colors hover:text-fg">
+              <a href={sectionPath(locale, s.id)} class="inline-block py-1.5 text-muted transition-colors hover:text-fg">
                 {t(s.nav)}
               </a>
             </li>

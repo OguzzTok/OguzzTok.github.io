@@ -10,8 +10,9 @@ export function initGalleries() {
     if (!item || isModifiedClick(event)) return;
     event.preventDefault();
 
-    const gallery = item.closest('[data-gallery]')!;
+    const gallery = item.closest<HTMLElement>('[data-gallery]')!;
     const items = [...gallery.querySelectorAll<HTMLAnchorElement>('a[data-gallery-item]')];
+    const labels = JSON.parse(gallery.dataset.labels ?? '{}') as Record<string, string>;
     const [{ default: PhotoSwipe }] = await Promise.all([
       import('photoswipe'),
       import('photoswipe/style.css'),
@@ -30,9 +31,16 @@ export function initGalleries() {
       index: items.indexOf(item),
       mainClass: 'pswp--portfolio pswp--gallery',
       bgOpacity: 1,
-      showHideAnimationType: 'fade',
+      showHideAnimationType: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'none' : 'fade',
+      closeTitle: labels.close,
+      zoomTitle: labels.zoom,
+      arrowPrevTitle: labels.prev,
+      arrowNextTitle: labels.next,
+      errorMsg: labels.error,
     });
+    pswp.on('uiRegister', () => pswp.element?.setAttribute('aria-label', labels.dialog ?? ''));
     pswp.on('beforeOpen', () => document.documentElement.classList.add('lb-open'));
+    pswp.on('openingAnimationEnd', () => pswp.element?.setAttribute('data-ready', ''));
     pswp.on('destroy', () => document.documentElement.classList.remove('lb-open'));
     pswp.init();
   });

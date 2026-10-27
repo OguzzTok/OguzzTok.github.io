@@ -10,6 +10,7 @@ import Hero from '../../components/sections/Hero.astro';
 import SectionHeading from '../../components/ui/SectionHeading.astro';
 import { LOCALES, useTranslations, type Locale } from '../../lib/i18n';
 import { SECTIONS, sectionNumber, type SectionId } from '../../lib/sections';
+import { personJsonLd } from '../../lib/seo';
 import { printTranslationReport } from '../../lib/translation-report';
 
 export async function getStaticPaths() {
@@ -30,6 +31,7 @@ const components: Record<SectionId, (props: { locale: Locale }) => unknown> = {
 ---
 
 <BaseLayout locale={locale}>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(await personJsonLd(locale)).replaceAll('<', '\\u003c')} />
   <Hero locale={locale} />
 
   {

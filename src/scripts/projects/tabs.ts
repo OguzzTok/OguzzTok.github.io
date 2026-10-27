@@ -2,6 +2,7 @@
  * Sekme linklerini ARIA tablist'e çevirir: ok tuşları, Home/End, otomatik seçim.
  * /projects/ sayfalarında (urlMode=push) adres çubuğunu günceller; geri tuşu sekmeyi geri alır.
  */
+import { revealHorizontally } from '../dom';
 import type { Explorer } from './explorer';
 
 const isModifiedClick = (e: MouseEvent) => e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey;
@@ -31,7 +32,7 @@ export function initTabs(explorer: Explorer) {
       tab.tabIndex = selected ? 0 : -1;
       if (selected) {
         panel!.setAttribute('aria-labelledby', tab.id);
-        tab.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+        revealHorizontally(list!.parentElement!, tab); // mobilde seçili sekme şeritte görünsün; sayfa kaymaz
       }
     }
   }

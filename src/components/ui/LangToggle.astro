@@ -12,13 +12,14 @@ const target = otherLocale(locale);
 const href = alternatePath(Astro.url.pathname, target);
 ---
 
-<!-- Tek düğme: EN ↔ TR. Aynı sayfanın diğer dildeki adresine gider, seçimi hatırlar. -->
+<!--
+  Tek düğme: EN ↔ TR. Aynı sayfanın diğer dildeki adresine gider, seçimi hatırlar.
+  Erişilebilir ad görünen "EN TR" yazısını içerir (sesli komutla "TR"ye tıklanabilsin) + gizli açıklama.
+-->
 <a
   href={href}
   hreflang={target}
-  lang={target}
   data-lang-switch={target}
-  aria-label={t('lang.switch.label')}
   title={t('lang.switch.label')}
   class="flex h-10 items-center gap-1 rounded-sm px-2.5 font-mono text-xs tracking-wider transition-colors hover:bg-surface-2"
 >
@@ -26,12 +27,11 @@ const href = alternatePath(Astro.url.pathname, target);
     LOCALES.map((code, i) => (
       <>
         {i > 0 && <span class="text-line" aria-hidden="true">/</span>}
-        <span aria-hidden="true" class={code === locale ? 'font-semibold text-fg' : 'text-muted'}>
-          {code.toUpperCase()}
-        </span>
+        <span class={code === locale ? 'font-semibold text-fg' : 'text-muted'}>{code.toUpperCase()}</span>
       </>
     ))
   }
+  <span class="sr-only" lang={target}>{t('lang.switch.label')}</span>
 </a>
 
 <script>

@@ -1,0 +1,83 @@
+# Siteyi derler, test eder ve GitHub Pages'te yayınlar.
+# Typecheck, build, boyut kontrolü veya testlerden biri başarısız olursa yayın yapılmaz.
+# Test edilen dist/ klasörünün aynısı yayınlanır (ikinci kez build alınmaz).
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: # Actions sekmesinden elle çalıştırma
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Aynı anda tek yayın; yeni push gelirse yarıdaki yayın iptal edilmez, sıraya girer.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build ve test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Pages ayarları (base yolu)
+        id: pages
+        uses: actions/configure-pages@v6
+
+      - name: Bağımlılıklar
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run check
+
+      - name: Build
+        run: npm run build
+        env:
+          # OguzzTok.github.io için boş (kök dizin); başka repo adında "/repo-adi"
+          BASE_PATH: ${{ steps.pages.outputs.base_path }}
+
+      - name: Dosya boyutu kontrolü
+        run: npm run check:sizes
+
+      - name: Playwright tarayıcısı
+        run: npx playwright install --with-deps chromium
+
+      - name: Testler
+        run: npm test
+        env:
+          BASE_PATH: ${{ steps.pages.outputs.base_path }}
+
+      - name: Test raporu (sadece hata olursa)
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
+
+      - name: Siteyi Pages'e hazırla
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist
+
+  deploy:
+    name: Yayınla
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: GitHub Pages'e yayınla
+        id: deployment
+        uses: actions/deploy-pages@v5

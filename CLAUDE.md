@@ -15,7 +15,7 @@ Türkçe yaz, teknik terimleri İngilizce bırak.
 | 2 | Proje sekmeleri, kartlar, filtre, öne çıkan kart, lightbox + 3D | ✅ |
 | 3 | Detay sayfası ve medya blokları | ✅ |
 | 4 | Hero + istatistikler, hakkımda, sertifikalar, indirmeler, iletişim, 404 | ✅ |
-| 5 | SEO, performans, Playwright, GitHub Actions deploy, boyut kontrolü | ⏳ |
+| 5 | SEO, performans, Playwright, GitHub Actions deploy, boyut kontrolü | ✅ |
 | 6 | Bu rehberin tamamlanması, README'de GitHub Pages kurulumu | ⏳ |
 
 Gerçek bilgiler girildi (ad, e-posta, okul, şehir, başlangıç yılı, TR biyografi, araç kutusu).
@@ -32,7 +32,27 @@ sosyal linkler (şu an sadece GitHub), CV/portfolyo PDF'leri. İngilizce biyogra
 | `npm run check` | TypeScript + Astro tip kontrolü |
 | `npm run build` | Siteyi `dist/`'e derler; içerik şemaya uymuyorsa durur, eksik çevirileri listeler |
 | `npm run preview` | `dist/`'i yerelde yayınlar (GitHub Pages'teki hâlin aynısı) |
+| `npm test` | Playwright testleri (`dist/`'i 4322 portunda açar). **Önce `npm run build`** |
+| `npm run check:sizes` | Dosya boyutu kontrolü: >20 MB uyarı, >90 MB hata, görsel >5 MB uyarı, site >1 GB hata |
 | `npm run samples` | Örnek yer tutucu görsel/glb/pdf'leri üretir (sadece eksik olanları) |
+
+Test notları:
+- Açık bir `npm run preview` varsa testten önce kapat (`npx astro preview stop`); Astro 7 iki preview'a izin vermez.
+  `npm run dev` (4321) testlerle çakışmaz.
+- Testler içerikten bağımsız: sayıları sayfadan okur, uygun içerik yoksa ilgili test **atlanır** (skip), kırılmaz.
+  Örnek içerik silinince bazı testler (3D, fallback, önceki/sonraki) atlanabilir; bu normal.
+- Lightbox testlerinde ok/ESC'den önce `waitForLightbox()` çağır: PhotoSwipe açılış animasyonunda tuşları yok sayar
+  (script bitince `.pswp[data-ready]` ekler).
+- Base yolu testi (Git Bash'te yol dönüşümünü kapatarak):
+  `MSYS_NO_PATHCONV=1 BASE_PATH=/portfolio npm run build && MSYS_NO_PATHCONV=1 BASE_PATH=/portfolio npm test`
+  Sonra normal build'i tekrar al.
+- Lighthouse (yerelde, isteğe bağlı): Lighthouse'un kendi Chrome başlatıcısı bu makinede `spawn UNKNOWN` veriyor.
+  Playwright'ın Chromium'unu `--remote-debugging-port=9222` ile açıp `npx lighthouse@13.5.0 <url> --port=9222` ile bağlan.
+  Son ölçüm (Faz 5, mobil): tüm sayfalar performans 98, erişilebilirlik/en iyi uygulamalar/SEO 100.
+
+CI (`.github/workflows/deploy.yml`, main'e push veya elle): npm ci → check → build → check:sizes → Playwright →
+aynı `dist/` Pages'e yüklenir → deploy. Herhangi biri başarısızsa yayın olmaz. Base yolu `actions/configure-pages`'ten
+gelir (OguzzTok.github.io için boş). Test başarısız olursa rapor "playwright-report" artifact'ında (7 gün).
 
 Windows'ta Node `C:\Program Files\nodejs` altında. Bash'te `node` bulunamazsa:
 `export PATH="/c/Program Files/nodejs:$PATH"`.
@@ -87,6 +107,15 @@ Düzen kuralları:
 - Kolon şablonu verilmemiş `.grid` varsayılan olarak `minmax(0,1fr)` (global.css base katmanı). Çok kolonlu şablonlarda
   da `minmax(0,Nfr)` kullan; düz `1fr` uzun kelime/kod satırında mobilde sayfayı yatay taşırır.
 - Sayfa içi bölümler arası boşluk `margin` ile verilir (padding değil); `#bölüm` linki başlığın hemen üstüne kayar.
+- Yatay şeritte öğe göstermek için `element.scrollIntoView()` **kullanma**: sayfayı da dikey kaydırır (açılışta sayfanın
+  sekmelere atlaması ve Lighthouse'ta LCP ölçülememesi bu yüzdendi). `scripts/dom.ts` → `revealHorizontally()`.
+- Kod blokları `github-dark-default` / `github-light-default` temasıyla (yorum satırı kontrastı ≥ 4.5:1). Başka tema
+  seçilirse kontrastı ölç.
+- İkon/düğmelerin erişilebilir adı görünen metni içermeli (WCAG 2.5.3); dokunma hedefi en az 24×24 px.
+
+SEO: her sayfada title/description, canonical, hreflang (en, tr, x-default), Open Graph (proje sayfasında kapak, diğerlerinde
+öne çıkan projenin kapağı: `lib/seo.ts`), ana sayfada schema.org `Person` JSON-LD, `robots.txt` (`src/pages/robots.txt.ts`),
+iki dilli sitemap. 404 ve kök yönlendirme sayfası `noindex`, sitemap'te yok.
 
 Yerelde test notu: `npm run preview` sayfaları tarayıcı önbelleğinden verebilir. Değişiklik görünmüyorsa adrese
 `?v=2` ekle veya sert yenile (Ctrl+F5).
@@ -212,7 +241,7 @@ Fotoğraf: `src/data/about/photo.jpg` (dikey, en az 900×1200).
 ### Son adımlar (her içerik değişikliğinden sonra)
 
 1. `npm run build` — şema hatası varsa düzelt; çeviri raporundaki yeni eksikleri kullanıcıya söyle.
-2. Testler (Faz 5'ten sonra): `npm test`.
+2. `npm test` ve `npm run check:sizes` — başarısız olursa push etme, sebebini düzelt ya da kullanıcıya söyle.
 3. Commit + push (main'e doğrudan; CI testleri geçmezse yayın yapılmaz). Conventional commits, Türkçe açıklama:
    `feat(icerik): Modeller'e "Low-poly Sandık" eklendi`, `fix(icerik): CV güncellendi`.
    Kod değişiklikleri ise `feature/…` veya `fix/…` branch'inde yapılıp PR ile birleştirilir.

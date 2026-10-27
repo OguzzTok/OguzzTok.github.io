@@ -10,6 +10,7 @@ import 'photoswipe/style.css';
 import './lightbox.css';
 import type { LightboxLabels } from '../../lib/explorer';
 import type { LightboxProject } from '../../lib/lightbox';
+import { revealHorizontally } from '../dom';
 import { openModelView, type ModelView } from './model-view';
 
 export interface LightboxData {
@@ -50,7 +51,7 @@ export function openLightbox({ data, order, start }: { data: LightboxData; order
     index: firstSlideOf(projects.findIndex((p) => p.slug === start)),
     mainClass: 'pswp--portfolio',
     bgOpacity: 1,
-    showHideAnimationType: 'fade',
+    showHideAnimationType: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'none' : 'fade',
     counter: false, // kendi sayacımız proje içindeki sırayı gösterir
     returnFocus: false, // kapanınca odağı son bakılan projenin kartına biz veriyoruz
     closeTitle: L['lightbox.close'],
@@ -186,7 +187,7 @@ export function openLightbox({ data, order, start }: { data: LightboxData; order
     thumbs!.querySelectorAll('.lb-thumb').forEach((thumb, i) => {
       if (i === slide.image) {
         thumb.setAttribute('aria-current', 'true');
-        thumb.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+        revealHorizontally(thumbs!, thumb as HTMLElement);
       } else thumb.removeAttribute('aria-current');
     });
   }
@@ -243,6 +244,8 @@ export function openLightbox({ data, order, start }: { data: LightboxData; order
   });
 
   pswp.on('beforeOpen', () => document.documentElement.classList.add('lb-open'));
+  // Açılış animasyonu bitti: tuşlar artık işlenir (testler bunu bekler)
+  pswp.on('openingAnimationEnd', () => pswp.element?.setAttribute('data-ready', ''));
 
   pswp.on('destroy', () => {
     model?.close();

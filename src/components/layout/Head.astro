@@ -1,7 +1,11 @@
 ---
 import { getImage } from 'astro:assets';
+// Hero'daki isim ve gövde metni ilk ekranda görünür: bu iki fontu önceden yükle (diğer alt kümeler gerektiğinde iner).
+import displayFont from '@fontsource-variable/fraunces/files/fraunces-latin-wght-normal.woff2?url';
+import bodyFont from '@fontsource-variable/instrument-sans/files/instrument-sans-latin-wght-normal.woff2?url';
 import { getSite } from '../../lib/content';
-import { l, LOCALES, DEFAULT_LOCALE, type Locale } from '../../lib/i18n';
+import { l, LOCALES, DEFAULT_LOCALE, otherLocale, type Locale } from '../../lib/i18n';
+import { getDefaultShareImage } from '../../lib/seo';
 import { absoluteUrl, alternatePath, withBase } from '../../lib/urls';
 
 interface Props {
@@ -19,7 +23,9 @@ const fullTitle = title ? `${title} — ${site.name}` : site.name;
 const metaDescription = description || l(site.description, locale);
 const canonical = absoluteUrl(Astro.url.pathname);
 const alternates = LOCALES.map((lang) => ({ lang, href: absoluteUrl(alternatePath(Astro.url.pathname, lang)) }));
-const ogImage = image ? await getImage({ src: image, width: 1200, height: 630, format: 'jpg' }) : undefined;
+const shareImage = image ?? (await getDefaultShareImage());
+const ogImage = shareImage ? await getImage({ src: shareImage, width: 1200, height: 630, format: 'jpg' }) : undefined;
+const ogLocale = (l: Locale) => (l === 'tr' ? 'tr_TR' : 'en_US');
 ---
 
 <meta charset="utf-8" />
@@ -38,6 +44,8 @@ const ogImage = image ? await getImage({ src: image, width: 1200, height: 630, f
     </>
   )
 }
+<link rel="preload" href={displayFont} as="font" type="font/woff2" crossorigin />
+<link rel="preload" href={bodyFont} as="font" type="font/woff2" crossorigin />
 <link rel="sitemap" href={withBase('sitemap-index.xml')} />
 <link rel="icon" type="image/svg+xml" href={withBase('favicon.svg')} />
 <meta name="theme-color" content="#131211" />
@@ -47,9 +55,20 @@ const ogImage = image ? await getImage({ src: image, width: 1200, height: 630, f
 <meta property="og:title" content={fullTitle} />
 <meta property="og:description" content={metaDescription} />
 <meta property="og:url" content={canonical} />
-<meta property="og:locale" content={locale === 'tr' ? 'tr_TR' : 'en_US'} />
-{ogImage && <meta property="og:image" content={absoluteUrl(ogImage.src)} />}
+<meta property="og:locale" content={ogLocale(locale)} />
+<meta property="og:locale:alternate" content={ogLocale(otherLocale(locale))} />
+{
+  ogImage && (
+    <>
+      <meta property="og:image" content={absoluteUrl(ogImage.src)} />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
+    </>
+  )
+}
 <meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
+
+<slot />
 
 <!-- Tema: ilk boyamadan önce uygulanır ki sayfa yanıp sönmesin. Varsayılan koyu. -->
 <script is:inline>

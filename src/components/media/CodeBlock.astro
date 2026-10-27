@@ -26,7 +26,7 @@ const { code, lang, fileName, locale, caption, id } = Astro.props;
     <Code
       code={code.trimEnd()}
       lang={lang as ComponentProps<typeof Code>['lang']}
-      themes={{ dark: 'vitesse-dark', light: 'vitesse-light' }}
+      themes={{ dark: 'github-dark-default', light: 'github-light-default' }}
       defaultColor="dark"
     />
   </div>

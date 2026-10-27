@@ -32,7 +32,7 @@ const pageTitle = (tab: Tab) => `${tab.id === 'all' ? t('section.projects') : ta
           class="tab relative -mb-px flex shrink-0 items-start gap-1 border-b-2 border-transparent pt-1 pb-3 font-display text-xl whitespace-nowrap text-muted transition-colors hover:text-fg md:text-2xl"
         >
           <span>{tab.label}</span>
-          <span class="font-mono text-xs text-accent-text" aria-hidden="true">
+          <span class="font-mono text-xs text-accent-text" aria-hidden="true" data-tab-count>
             {tab.count}
           </span>
           <span class="sr-only">({plural(t, 'projects.count', tab.count)})</span>
