@@ -8,7 +8,7 @@ category: games
 status: released
 date: 2025-06-14
 order: 1
-featured: true
+featured: false
 draft: false
 cover:
   src: ./cover.jpg

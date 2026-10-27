@@ -23,16 +23,18 @@ Lightbox tarifi Faz 6'da baştan sona denendi (büyük görsel küçültme → �
 GitHub'a ilk gönderim ve Pages kurulumu README.md'deki adımlarla kullanıcı tarafından yapılacak; remote tanımlı değilse
 (`git remote -v` boş) push etme, kullanıcıya README'yi hatırlat.
 
-Gerçek bilgiler girildi: ad, e-posta, okul, şehir, başlangıç yılı, TR biyografi, araç kutusu.
+Gerçek bilgiler girildi: ad, e-posta, okul, şehir, başlangıç yılı, TR biyografi, araç kutusu,
+sosyal linkler (GitHub, LinkedIn, Behance), 3 sertifika, ilk gerçek proje `mental-impass` (öne çıkan).
 **Hâlâ bekleyenler** (uydurma, fırsat oldukça sor):
 - Gerçek fotoğraf → `src/data/about/photo.jpg` + `about.yaml` alt metni ("Oğuz Tok'un portresi" gibi).
-- Sosyal linkler (şu an sadece GitHub) → `src/data/site.yaml`.
+- Diğer sosyal linkler (itch.io, ArtStation, Sketchfab…) → `src/data/site.yaml`.
+- `mental-impass`: tam yayın günü (şimdilik 2025-12-01, künyede "1 Aralık 2025" görünür), oyunun linki (itch.io?).
 - CV / portfolyo PDF'leri (şu an örnek) → bkz. tarif.
 - İngilizce biyografi ve hero tanıtım cümlesini Claude yazdı; kullanıcı değiştirmek isterse açık ol.
 - E-posta okul adresi (`posta.mu.edu.tr`): mezuniyette kapanabilir.
 
 **Örnek içerik** hâlâ sitede (başlığında "sample/örnek" geçen her şey): projeler `lantern-keeper`, `tiny-dungeon`,
-`lowpoly-crate`, `poster-series`; sertifika `sample-certificate`; PDF'ler. Kullanıcı kendi içeriğini ekledikçe
+`lowpoly-crate`, `poster-series`; PDF'ler. Kullanıcı kendi içeriğini ekledikçe
 "Örnek içeriği temizleme" tarifiyle sil. `_template-*` klasörleri **silinmez** (draft şablonlar).
 
 ---
