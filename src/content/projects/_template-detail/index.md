@@ -5,7 +5,7 @@
 title: { en: Project title, tr: Proje adı }
 summary: { en: One sentence pitch., tr: Tek cümlelik tanıtım. }
 category: games              # src/data/categories.yaml'daki id
-status: in-progress          # released | in-progress | prototype | jam
+status: in-progress          # released | completed | in-progress | prototype | jam
 date: 2026-01-01             # yayın / bitiş tarihi
 order: 99                    # opsiyonel: küçük sayı önce gelir
 featured: false              # true → sekmelerin üstündeki büyük kart (tek proje önerilir)

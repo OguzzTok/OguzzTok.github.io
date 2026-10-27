@@ -28,7 +28,7 @@ sosyal linkler (GitHub, LinkedIn, Behance), 3 sertifika, ilk gerçek proje `ment
 **Hâlâ bekleyenler** (uydurma, fırsat oldukça sor):
 - Gerçek fotoğraf → `src/data/about/photo.jpg` + `about.yaml` alt metni ("Oğuz Tok'un portresi" gibi).
 - Diğer sosyal linkler (itch.io, ArtStation, Sketchfab…) → `src/data/site.yaml`.
-- `mental-impass`: tam yayın günü (şimdilik 2025-12-01, künyede "1 Aralık 2025" görünür), oyunun linki (itch.io?).
+- `mental-impass`: durumu `completed` (bitti, hiçbir yerde yayınlanmadı). Yayınlanırsa `released` + `links.itch`.
 - CV / portfolyo PDF'leri (şu an örnek) → bkz. tarif.
 - İngilizce biyografi ve hero tanıtım cümlesini Claude yazdı; kullanıcı değiştirmek isterse açık ol.
 - E-posta okul adresi (`posta.mu.edu.tr`): mezuniyette kapanabilir.
@@ -46,7 +46,8 @@ sosyal linkler (GitHub, LinkedIn, Behance), 3 sertifika, ilk gerçek proje `ment
 2. **Boyutu kontrol et.** Görsel > 5 MB veya uzun kenar > 2560 px → küçült (komut aşağıda). `.glb` > 20 MB → sıkıştırmayı öner.
 3. **Eksik bilgiyi sor** (tek mesajda, liste hâlinde). Proje için sorulacaklar:
    - Başlık ve tek cümlelik açıklama (TR ve/veya EN)
-   - Kategori, durum (released / in-progress / prototype / jam), tarih (en azından ay/yıl)
+   - Kategori, durum (released / completed / in-progress / prototype / jam), tarih (en azından ay/yıl)
+     (`completed` = bitti ama yayınlanmadı; künyede tarih ay/yıl olarak, yayınlanmışsa "Yayın tarihi" diye görünür)
    - Kullanılan araçlar, etiketler
    - Görsellerde ne olduğu (alt metin için; kısa)
    - Linkler (itch.io, Steam, GitHub, fragman, Sketchfab, ArtStation)

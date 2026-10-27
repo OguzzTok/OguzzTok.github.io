@@ -22,6 +22,7 @@
 
   /* Proje durum rozetleri (anlamsal renkler; vurgu rengi değil) */
   --status-released: #5fd08a;
+  --status-completed: #b48cf2;
   --status-in-progress: #f2b84b;
   --status-prototype: #b3a998;
   --status-jam: color-mix(in oklab, var(--accent) 55%, white);
@@ -159,6 +160,7 @@
     background: var(--dot);
   }
   .status-badge[data-status='released'] { --dot: var(--status-released); }
+  .status-badge[data-status='completed'] { --dot: var(--status-completed); }
   .status-badge[data-status='in-progress'] { --dot: var(--status-in-progress); }
   .status-badge[data-status='prototype'] { --dot: var(--status-prototype); }
   .status-badge[data-status='jam'] { --dot: var(--status-jam); }

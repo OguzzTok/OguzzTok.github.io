@@ -16,8 +16,10 @@ const { spec } = data;
 const t = useTranslations(locale);
 
 const team = spec.team === undefined ? undefined : spec.team === 1 ? t('spec.solo') : t('spec.people', { count: spec.team });
+// Yayınlanmamış projede "Yayın tarihi" yanıltıcı olur. Gün gösterilmez: çoğu projede sadece ay/yıl bilinir.
+const dateLabel = data.status === 'released' ? t('spec.released') : t('spec.date');
 const rows = [
-  { label: t('spec.released'), value: formatDate(data.date, locale, { year: 'numeric', month: 'long', day: 'numeric' }) },
+  { label: dateLabel, value: formatDate(data.date, locale, { year: 'numeric', month: 'long' }) },
   { label: t('spec.genre'), value: l(spec.genre, locale) },
   { label: t('spec.engine'), value: spec.engine },
   { label: t('spec.platforms'), value: spec.platforms.join(', ') },

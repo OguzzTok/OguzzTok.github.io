@@ -13,6 +13,22 @@ test.describe('Detay sayfası', () => {
     await expect(page.locator('#spec-title')).toBeVisible();
   });
 
+  test('künyede durum çevrilmiş görünür; "Yayın tarihi" sadece yayınlanmış projede', async ({ page }) => {
+    await page.goto('en/projects/');
+    const hrefs = await page.locator('[data-project][data-mode="detail"] h2 a').evaluateAll((links) => links.map((a) => a.getAttribute('href')!));
+    test.skip(hrefs.length === 0, 'Detay modunda proje yok');
+
+    for (const href of hrefs) {
+      await page.goto(href);
+      const spec = page.locator('aside[aria-labelledby="spec-title"]');
+      const badge = spec.locator('.status-badge');
+      await expect(badge, `${href} durum metni`).not.toContainText('status.');
+      const released = (await badge.getAttribute('data-status')) === 'released';
+      await expect(spec.locator('dt', { hasText: /^Release date$/ }), href).toHaveCount(released ? 1 : 0);
+      await expect(spec.locator('dt', { hasText: /^Date$/ }), href).toHaveCount(released ? 0 : 1);
+    }
+  });
+
   test('önceki/sonraki proje navigasyonu çalışır', async ({ page }) => {
     const href = await firstDetailHref(page);
     test.skip(!href, 'Detay modunda proje yok');
