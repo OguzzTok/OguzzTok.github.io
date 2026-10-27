@@ -12,13 +12,3 @@
   kind: count
   category: games
   label: { en: games, tr: oyun }
-
-- id: jams
-  kind: count
-  status: jam
-  label: { en: game jams, tr: game jam }
-
-- id: models
-  kind: count
-  category: models
-  label: { en: 3D models, tr: 3D model }
