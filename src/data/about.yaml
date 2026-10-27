@@ -1,40 +1,37 @@
 # Hakkımda bölümü. Fotoğraf: src/data/about/photo.jpg (dikey, en az 900x1200 önerilir).
-# ÖRNEK METİN — kendi biyografinle değiştir.
+# Fotoğraf şu an yer tutucu: gerçek fotoğraf gelince alt metnini de güncelle.
 photo:
   src: ./about/photo.jpg
   alt:
     en: Portrait photo
     tr: Portre fotoğrafı
 bio:
+  # en: Türkçe metinden çevrildi (kullanıcı gözden geçirmeli)
   en: |-
-    Sample biography — replace this with your own. Write two or three short paragraphs about what kind of games you like to make and what you are learning right now.
-
-    Leave an empty line between paragraphs.
+    I'm a second-year Digital Game Design student at Muğla Sıtkı Koçman University. I started 3D modeling in Blender in 2020 and have been actively creating models for the past two years. Since I can also build game systems in Unity with C#, I keep in mind how my models will work inside a game. I'm currently improving my animation skills.
   tr: |-
-    Örnek biyografi — bunu kendi metninle değiştir. Ne tür oyunlar yapmayı sevdiğini ve şu an neler öğrendiğini iki üç kısa paragrafta anlat.
-
-    Paragraflar arasına boş bir satır bırak.
+    Muğla Sıtkı Koçman Üniversitesi Dijital Oyun Tasarımı 2. sınıf öğrencisiyim. 2020'de Blender ile 3D modellemeye başladım; son 2 yıldır aktif olarak model üretiyorum. Unity'de C# ile oyun sistemleri geliştirebildiğim için modellerimin oyun içinde nasıl çalışacağını da göz önünde bulunduruyorum. Şu anda animasyon becerilerimi geliştiriyorum.
 school:
-  en: '' # TODO: okul adı
-  tr: ''
+  en: Muğla Sıtkı Koçman University
+  tr: Muğla Sıtkı Koçman Üniversitesi
 city:
-  en: '' # TODO: şehir
-  tr: ''
-since: 2022 # TODO: doğrula
+  en: Muğla / Bodrum
+  tr: Muğla / Bodrum
+since: 2022
 toolbox:
+  - group: { en: 3D, tr: 3D }
+    items:
+      - tool: blender
   - group: { en: Engine & code, tr: Motor ve kod }
     items:
       - tool: unity
       - tool: csharp
-      - tool: git
-        level: basic
-  - group: { en: 3D & 2D art, tr: 3D ve 2D sanat }
-    items:
-      - tool: blender
-      - tool: substance-painter
-        level: basic
-      - tool: photoshop
-      - tool: aseprite
+      - tool: python
   - group: { en: Design, tr: Tasarım }
     items:
-      - tool: figma
+      - tool: photoshop
+      - tool: illustrator
+      - tool: indesign
+  - group: { en: Other, tr: Diğer }
+    items:
+      - tool: office

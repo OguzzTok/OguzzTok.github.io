@@ -16,3 +16,11 @@
   label: Aseprite
 - id: git
   label: Git
+- id: illustrator
+  label: Illustrator
+- id: indesign
+  label: InDesign
+- id: python
+  label: Python
+- id: office
+  label: Office

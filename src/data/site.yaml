@@ -1,15 +1,15 @@
 # Sitenin genel bilgileri. Boş bırakılan sosyal linkler sitede görünmez.
-name: OguzzTok # TODO: sitede görünecek gerçek ad
+name: Oğuz Tok
 eyebrow:
   en: GAME DESIGN STUDENT · UNITY · C#
   tr: OYUN TASARIMI ÖĞRENCİSİ · UNITY · C#
 intro:
-  en: I design and build small games, levels and 3D assets. Currently studying Digital Game Design.
-  tr: Küçük oyunlar, bölümler ve 3D modeller tasarlayıp geliştiriyorum. Dijital Oyun Tasarımı öğrencisiyim.
+  en: Digital Game Design student. I create 3D models in Blender and build game systems in Unity with C#.
+  tr: Dijital Oyun Tasarımı öğrencisiyim. Blender'da 3D modeller üretiyor, Unity'de C# ile oyun sistemleri geliştiriyorum.
 description:
   en: Game design portfolio — games, 3D models and design work.
   tr: Oyun tasarımı portfolyosu — oyunlar, 3D modeller ve tasarım çalışmaları.
-email: hello@example.com # TODO: gerçek e-posta adresi
+email: oguztok@posta.mu.edu.tr # okul adresi: mezuniyette kapanabilir, o zaman değiştir
 contactText:
   en: Looking for an intern, a jam teammate or just want to talk games? Drop me a line.
   tr: Stajyer, jam takım arkadaşı mı arıyorsun ya da sadece oyun konuşmak mı istiyorsun? Yaz bana.

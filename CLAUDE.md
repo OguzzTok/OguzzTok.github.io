@@ -18,8 +18,10 @@ Türkçe yaz, teknik terimleri İngilizce bırak.
 | 5 | SEO, performans, Playwright, GitHub Actions deploy, boyut kontrolü | ⏳ |
 | 6 | Bu rehberin tamamlanması, README'de GitHub Pages kurulumu | ⏳ |
 
-Doldurulmayı bekleyen gerçek bilgiler (uydurma, kullanıcıya sor): `src/data/site.yaml` → `name`, `email`;
-`src/data/about.yaml` → `bio`, `school`, `city`, `since`; `src/data/stats.yaml` → `years.year`.
+Gerçek bilgiler girildi (ad, e-posta, okul, şehir, başlangıç yılı, TR biyografi, araç kutusu).
+Hâlâ bekleyenler (uydurma, kullanıcıya sor): gerçek fotoğraf (`src/data/about/photo.jpg` + `about.yaml` alt metni),
+sosyal linkler (şu an sadece GitHub), CV/portfolyo PDF'leri. İngilizce biyografi kullanıcının Türkçe metninden
+çevrildi; kullanıcı onaylamadıysa değiştirme isteğine açık ol. E-posta okul adresi: mezuniyette değişebilir.
 Örnek içerik (başlığında "sample/örnek" geçen her şey) kullanıcı kendi içeriğini ekledikçe silinir.
 
 ## Komutlar

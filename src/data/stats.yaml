@@ -5,7 +5,7 @@
 # Ekrandaki sıra bu dosyadaki sıradır.
 - id: years
   kind: yearsSince
-  year: 2022 # TODO: başlangıç yılını doğrula
+  year: 2022
   label: { en: years making games, tr: yıldır oyun yapıyorum }
 
 - id: released

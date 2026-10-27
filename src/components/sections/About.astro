@@ -39,7 +39,7 @@ const hasBasic = about.toolbox.some((g) => g.items.some((i) => i.level === 'basi
 
     {
       facts.length > 0 && (
-        <dl class="mt-10 grid gap-x-8 gap-y-4 border-t border-line pt-6 sm:grid-cols-3">
+        <dl class="mt-10 flex flex-wrap gap-x-12 gap-y-5 border-t border-line pt-6">
           {facts.map((fact) => (
             <div>
               <dt class="eyebrow">{fact.label}</dt>
