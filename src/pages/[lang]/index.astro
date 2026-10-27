@@ -1,12 +1,15 @@
 ---
+/** Ana sayfa: hero + sayaçlar, ardından numaralı bölümler (sıra: src/lib/sections.ts). */
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import LocalizedText from '../../components/ui/LocalizedText.astro';
-import SectionHeading from '../../components/ui/SectionHeading.astro';
 import ProjectsExplorer from '../../components/projects/ProjectsExplorer.astro';
-import { getSite } from '../../lib/content';
+import About from '../../components/sections/About.astro';
+import Certificates from '../../components/sections/Certificates.astro';
+import Contact from '../../components/sections/Contact.astro';
+import Downloads from '../../components/sections/Downloads.astro';
+import Hero from '../../components/sections/Hero.astro';
+import SectionHeading from '../../components/ui/SectionHeading.astro';
 import { LOCALES, useTranslations, type Locale } from '../../lib/i18n';
-import { SECTIONS, sectionNumber } from '../../lib/sections';
-import { sectionPath } from '../../lib/urls';
+import { SECTIONS, sectionNumber, type SectionId } from '../../lib/sections';
 import { printTranslationReport } from '../../lib/translation-report';
 
 export async function getStaticPaths() {
@@ -16,31 +19,29 @@ export async function getStaticPaths() {
 
 const locale = Astro.params.lang as Locale;
 const t = useTranslations(locale);
-const site = await getSite();
+
+const components: Record<SectionId, (props: { locale: Locale }) => unknown> = {
+  projects: ProjectsExplorer,
+  about: About,
+  certificates: Certificates,
+  downloads: Downloads,
+  contact: Contact,
+};
 ---
 
 <BaseLayout locale={locale}>
-  <!-- Hero: Faz 4'te istatistiklerle birlikte son hâlini alacak -->
-  <section class="mx-auto max-w-6xl px-4 pt-20 pb-24 sm:px-6 md:pt-32">
-    <LocalizedText value={site.eyebrow} locale={locale} as="p" class="eyebrow mb-6" />
-    <h1 class="text-6xl font-medium md:text-8xl">{site.name}</h1>
-    <LocalizedText value={site.intro} locale={locale} as="p" class="mt-6 max-w-[52ch] text-lg text-muted md:text-xl" />
-    <div class="mt-10 flex flex-wrap gap-3">
-      <a href={sectionPath(locale, 'projects')} class="btn btn-primary">{t('hero.cta.projects')}</a>
-      <a href={sectionPath(locale, 'contact')} class="btn btn-ghost">{t('hero.cta.contact')}</a>
-    </div>
-  </section>
+  <Hero locale={locale} />
 
   {
-    SECTIONS.map((section) => (
-      <section class="mx-auto max-w-6xl scroll-mt-24 px-4 py-16 sm:px-6" aria-labelledby={`${section.id}-title`} id={section.id}>
-        <SectionHeading number={sectionNumber(section.id)} title={t(section.title)} id={`${section.id}-title`} />
-        {section.id === 'projects' ? (
-          <ProjectsExplorer locale={locale} />
-        ) : (
-          <p class="text-muted">{t('wip.notice')}</p>
-        )}
-      </section>
-    ))
+    SECTIONS.map((section) => {
+      const Section = components[section.id];
+      return (
+        // Boşluk margin ile: #bölüm linki başlığın hemen üstüne kaydırır (header payı: html scroll-padding-top)
+        <section class="mx-auto mt-24 max-w-6xl px-4 sm:px-6 md:mt-32" aria-labelledby={`${section.id}-title`} id={section.id}>
+          <SectionHeading number={sectionNumber(section.id)} title={t(section.title)} id={`${section.id}-title`} />
+          <Section locale={locale} />
+        </section>
+      );
+    })
   }
 </BaseLayout>

@@ -1,0 +1,77 @@
+---
+/** Hakkımda: fotoğraf, biyografi, kısa bilgiler, araç kutusu (src/data/about.yaml). */
+import { Image } from 'astro:assets';
+import { getAbout, getTools } from '../../lib/content';
+import { l, localize, useTranslations, type Locale } from '../../lib/i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+const [about, toolLabels] = await Promise.all([getAbout(), getTools()]);
+
+const bio = localize(about.bio, locale);
+const paragraphs = bio?.text.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean) ?? [];
+const facts = [
+  { label: t('about.school'), value: l(about.school, locale) },
+  { label: t('about.city'), value: l(about.city, locale) },
+  { label: t('about.since'), value: about.since ? String(about.since) : '' },
+].filter((f) => f.value);
+const hasBasic = about.toolbox.some((g) => g.items.some((i) => i.level === 'basic'));
+---
+
+<div class="grid grid-cols-[minmax(0,1fr)] gap-10 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:gap-16">
+  <Image
+    src={about.photo.src}
+    alt={l(about.photo.alt, locale)}
+    widths={[360, 540, 720, 1080]}
+    sizes="(min-width: 1152px) 440px, (min-width: 768px) 40vw, 100vw"
+    class="aspect-[3/4] w-full rounded-sm bg-surface-2 object-cover shadow-card"
+    loading="lazy"
+  />
+
+  <div>
+    <div class="prose-body space-y-4 text-lg md:text-xl md:leading-relaxed" lang={bio?.isFallback ? bio.lang : undefined}>
+      {paragraphs.map((p) => <p>{p}</p>)}
+    </div>
+
+    {
+      facts.length > 0 && (
+        <dl class="mt-10 grid gap-x-8 gap-y-4 border-t border-line pt-6 sm:grid-cols-3">
+          {facts.map((fact) => (
+            <div>
+              <dt class="eyebrow">{fact.label}</dt>
+              <dd class="mt-1">{fact.value}</dd>
+            </div>
+          ))}
+        </dl>
+      )
+    }
+
+    {
+      about.toolbox.length > 0 && (
+        <div class="mt-10 border-t border-line pt-6">
+          <h3 class="eyebrow">{t('about.toolbox')}</h3>
+          <div class="mt-5 space-y-5">
+            {about.toolbox.map((group) => (
+              <div class="grid gap-2 sm:grid-cols-[10rem_1fr] sm:gap-4">
+                <p class="text-sm text-muted">{l(group.group, locale)}</p>
+                <ul class="flex flex-wrap gap-2">
+                  {group.items.map((item) => (
+                    <li class="chip text-fg">
+                      {toolLabels.get(item.tool.id) ?? item.tool.id}
+                      {item.level === 'basic' && <span class="ml-1.5 text-muted">· {t('about.basic')}</span>}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+          {hasBasic && <p class="mt-4 text-xs text-muted">{t('about.basicNote')}</p>}
+        </div>
+      )
+    }
+  </div>
+</div>

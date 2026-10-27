@@ -2,6 +2,7 @@
 #   manual     → value elle yazılır
 #   count      → build sırasında proje sayısı hesaplanır (status ve/veya category ile süzülebilir)
 #   yearsSince → `year`dan bu yana geçen yıl (build tarihine göre)
+# Ekrandaki sıra bu dosyadaki sıradır.
 - id: years
   kind: yearsSince
   year: 2022 # TODO: başlangıç yılını doğrula
@@ -10,6 +11,7 @@
 - id: released
   kind: count
   status: released
+  category: games
   label: { en: games released, tr: yayınlanan oyun }
 
 - id: jams

@@ -14,7 +14,7 @@ Türkçe yaz, teknik terimleri İngilizce bırak.
 | 1 | Kurulum, şemalar, örnek içerik, i18n, layout, tema | ✅ |
 | 2 | Proje sekmeleri, kartlar, filtre, öne çıkan kart, lightbox + 3D | ✅ |
 | 3 | Detay sayfası ve medya blokları | ✅ |
-| 4 | Hero + istatistikler, hakkımda, sertifikalar, indirmeler, iletişim, 404 | ⏳ |
+| 4 | Hero + istatistikler, hakkımda, sertifikalar, indirmeler, iletişim, 404 | ✅ |
 | 5 | SEO, performans, Playwright, GitHub Actions deploy, boyut kontrolü | ⏳ |
 | 6 | Bu rehberin tamamlanması, README'de GitHub Pages kurulumu | ⏳ |
 
@@ -73,7 +73,21 @@ Detay sayfası (`src/pages/[lang]/projects/[category]/[slug].astro`, sadece deta
 - Bileşenler: `components/detail/` (sayfa parçaları), `components/media/` (bloklar; `MediaBlocks.astro` dağıtıcı).
   Script'ler: `embeds.ts`, `gallery.ts` (galeri lightbox'ı), `copy.ts` (kopyala butonları, e-posta için de),
   `model-viewer.ts` (lightbox ve model bloğunun ortak 3D yükleyicisi).
-- Mobil düzen kuralı: tek kolonlu grid'lerde `grid-cols-[minmax(0,1fr)]` kullan; yoksa uzun kod satırı sayfayı yatay taşırır.
+
+Ana sayfa (`src/pages/[lang]/index.astro`): `sections/Hero.astro` (+ `Stats.astro`, sayaçlar `scripts/counters.ts`),
+sonra `src/lib/sections.ts` sırasıyla numaralı bölümler: Projeler, `About`, `Certificates`, `Downloads`, `Contact`
+(hepsi `src/components/sections/`). Veri okuyucular: `lib/stats.ts`, `lib/profile.ts` (sertifika, indirme, sosyal).
+- Sosyal linkler ikonsuz, tipografik liste (marka ikonu paketi eklenmedi). Sıra `lib/profile.ts` → `SOCIAL_LABELS`.
+- `stats.yaml` ve `downloads.yaml`'da ekrandaki sıra = dosyadaki sıra (`getCollectionInFileOrder`; Astro normalde id'ye göre sıralar).
+- 404 (`src/pages/404.astro` → `dist/404.html`): dil bilinemediği için mesaj iki dilde, header/footer yok (`chrome={false}`).
+
+Düzen kuralları:
+- Kolon şablonu verilmemiş `.grid` varsayılan olarak `minmax(0,1fr)` (global.css base katmanı). Çok kolonlu şablonlarda
+  da `minmax(0,Nfr)` kullan; düz `1fr` uzun kelime/kod satırında mobilde sayfayı yatay taşırır.
+- Sayfa içi bölümler arası boşluk `margin` ile verilir (padding değil); `#bölüm` linki başlığın hemen üstüne kayar.
+
+Yerelde test notu: `npm run preview` sayfaları tarayıcı önbelleğinden verebilir. Değişiklik görünmüyorsa adrese
+`?v=2` ekle veya sert yenile (Ctrl+F5).
 
 Kurallar:
 - İç linkler asla elle `"/..."` yazılmaz: `pagePath()`, `sectionPath()`, `withBase()` kullanılır (base değişebilir).
@@ -168,9 +182,10 @@ Her tariften sonra: **Son adımlar** bölümünü uygula.
 
 ### İstatistik
 
-`src/data/stats.yaml` (3-4 kayıt önerilir). `kind`:
+`src/data/stats.yaml` (3-4 kayıt önerilir, ekrandaki sıra dosyadaki sıradır). `kind`:
 - `manual` → `value: 12` elle yazılır.
 - `count` → proje sayısı; `status: released` ve/veya `category: models` ile süzülür.
+  Etiket "yayınlanan oyun" diyorsa `category: games` de ekle; yoksa yayınlanan modeller de sayılır.
 - `yearsSince` → `year: 2022`'den bu yana geçen yıl (build tarihine göre hesaplanır).
 Her birinde `label: {en, tr}`, opsiyonel `suffix` (ör. `+`).
 

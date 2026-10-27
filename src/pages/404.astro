@@ -1,0 +1,40 @@
+---
+/**
+ * 404 sayfası → dist/404.html (GitHub Pages bulunamayan her adres için bunu gösterir).
+ * Adresin dili güvenilir bilinemediği için mesaj iki dilde; JS gerekmez.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { LOCALES, useTranslations } from '../lib/i18n';
+import { pagePath } from '../lib/urls';
+
+const messages = LOCALES.map((locale) => ({ locale, t: useTranslations(locale) }));
+const en = useTranslations('en');
+---
+
+<BaseLayout locale="en" title={en('notFound.title')} noindex chrome={false}>
+  <div class="mx-auto flex min-h-dvh max-w-6xl flex-col justify-center px-4 py-16 sm:px-6">
+    <p class="font-mono text-sm text-accent-text" aria-hidden="true">404</p>
+    <div class="mt-6 grid gap-12 md:grid-cols-2 md:gap-16">
+      {
+        messages.map(({ locale, t }, i) => (
+          <section lang={locale} class:list={[i > 0 && 'border-t border-line pt-12 md:border-t-0 md:border-l md:pt-0 md:pl-16']}>
+            {i === 0 ? (
+              <h1 class="text-5xl font-medium md:text-7xl">{t('notFound.title')}</h1>
+            ) : (
+              <h2 class="text-5xl font-medium md:text-7xl">{t('notFound.title')}</h2>
+            )}
+            <p class="mt-5 text-lg text-muted">{t('notFound.text')}</p>
+            <div class="mt-8 flex flex-wrap gap-3">
+              <a href={pagePath(locale)} class="btn btn-primary" hreflang={locale}>
+                {t('notFound.home')}
+              </a>
+              <a href={pagePath(locale, 'projects')} class="btn btn-ghost" hreflang={locale}>
+                {t('notFound.projects')}
+              </a>
+            </div>
+          </section>
+        ))
+      }
+    </div>
+  </div>
+</BaseLayout>

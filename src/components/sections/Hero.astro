@@ -1,0 +1,29 @@
+---
+/** Ana sayfa girişi: üst başlık, isim, kısa tanıtım, iki buton, altında sayaçlar. */
+import LocalizedText from '../ui/LocalizedText.astro';
+import Stats from './Stats.astro';
+import { getSite } from '../../lib/content';
+import { useTranslations, type Locale } from '../../lib/i18n';
+import { sectionPath } from '../../lib/urls';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+const site = await getSite();
+---
+
+<section class="mx-auto max-w-6xl px-4 pt-16 sm:px-6 md:pt-28" aria-labelledby="hero-title">
+  <LocalizedText value={site.eyebrow} locale={locale} as="p" class="eyebrow mb-6 text-accent-text" />
+  <h1 id="hero-title" class="text-[clamp(3.5rem,12vw,9.5rem)] leading-[0.92] font-medium tracking-[-0.035em]">
+    {site.name}
+  </h1>
+  <LocalizedText value={site.intro} locale={locale} as="p" class="mt-8 max-w-[46ch] text-lg text-muted md:text-2xl md:leading-snug" />
+  <div class="mt-10 flex flex-wrap gap-3">
+    <a href={sectionPath(locale, 'projects')} class="btn btn-primary">{t('hero.cta.projects')} <span aria-hidden="true">↓</span></a>
+    <a href={sectionPath(locale, 'contact')} class="btn btn-ghost">{t('hero.cta.contact')}</a>
+  </div>
+  <Stats locale={locale} />
+</section>

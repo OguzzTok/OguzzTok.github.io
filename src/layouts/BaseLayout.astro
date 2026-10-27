@@ -15,9 +15,11 @@ interface Props {
   description?: string;
   image?: ImageMetadata;
   noindex?: boolean;
+  /** false: header ve footer olmadan (404 sayfası) */
+  chrome?: boolean;
 }
 
-const { locale, ...seo } = Astro.props;
+const { locale, chrome = true, ...seo } = Astro.props;
 const t = useTranslations(locale);
 ---
 
@@ -33,10 +35,10 @@ const t = useTranslations(locale);
     >
       {t('a11y.skip')}
     </a>
-    <Header locale={locale} />
+    {chrome && <Header locale={locale} />}
     <main id="main" class="flex-1">
       <slot />
     </main>
-    <Footer locale={locale} />
+    {chrome && <Footer locale={locale} />}
   </body>
 </html>

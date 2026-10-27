@@ -24,7 +24,7 @@ const Heading = `h${headingLevel}` as 'h2' | 'h3';
 const href = isDetail ? projectHref(project, category, locale) : (fullImage ?? projectHref(project, category, locale));
 ---
 
-<article class="group relative mb-16 grid gap-6 md:mb-20 md:grid-cols-[1.5fr_1fr] md:items-center md:gap-10" data-featured>
+<article class="group relative mb-16 grid gap-6 md:mb-20 md:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] md:items-center md:gap-10" data-featured>
   <div class="relative aspect-video overflow-hidden rounded-sm bg-surface-2 shadow-card">
     <Image
       src={data.cover.src}

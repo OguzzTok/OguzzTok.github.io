@@ -1,0 +1,67 @@
+---
+/** Sertifikalar (src/content/certificates/*.yaml). */
+import { Image } from 'astro:assets';
+import CopyButton from '../ui/CopyButton.astro';
+import LocalizedText from '../ui/LocalizedText.astro';
+import { formatDate, plural, useTranslations, type Locale } from '../../lib/i18n';
+import { getCertificates, initials } from '../../lib/profile';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+const certificates = await getCertificates();
+---
+
+<ul class="grid grid-cols-[minmax(0,1fr)] gap-6 md:grid-cols-2">
+  {
+    certificates.map(({ id, data }) => (
+      <li class="flex gap-5 rounded-sm border border-line bg-surface p-6" data-certificate={id}>
+        {data.logo ? (
+          <Image src={data.logo} alt="" width={112} class="size-14 shrink-0 rounded-sm bg-surface-2 object-contain p-1" />
+        ) : (
+          <span class="grid size-14 shrink-0 place-items-center rounded-sm bg-accent-soft font-display text-xl text-accent-text" aria-hidden="true">
+            {initials(data.issuer)}
+          </span>
+        )}
+        <div class="min-w-0 flex-1">
+          <h3 class="text-2xl font-medium">
+            <LocalizedText value={data.title} locale={locale} />
+          </h3>
+          <p class="mt-1 text-muted">
+            {data.issuer}
+            {data.instructor && (
+              <>
+                {' · '}
+                {t('cert.instructor')}: {data.instructor}
+              </>
+            )}
+          </p>
+          <p class="eyebrow mt-3">
+            {formatDate(data.date, locale, { year: 'numeric', month: 'long' })}
+            {data.hours && ` · ${plural(t, 'cert.hours', data.hours)}`}
+          </p>
+
+          {(data.credentialId || data.verifyUrl) && (
+            <div class="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-line pt-4 text-sm">
+              {data.credentialId && (
+                <span class="flex min-w-0 items-center gap-1">
+                  <span class="text-muted">{t('cert.id')}:</span>
+                  <code class="truncate font-mono">{data.credentialId}</code>
+                  <CopyButton locale={locale} text={data.credentialId} label={t('cert.copyId')} />
+                </span>
+              )}
+              {data.verifyUrl && (
+                <a href={data.verifyUrl} target="_blank" rel="noopener" class="link">
+                  {t('cert.verify')} ↗
+                </a>
+              )}
+            </div>
+          )}
+        </div>
+      </li>
+    ))
+  }
+</ul>

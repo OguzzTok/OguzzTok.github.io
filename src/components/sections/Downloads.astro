@@ -1,0 +1,51 @@
+---
+/** İndirmeler: CV ve portfolyo PDF'leri, var olan her dil için (src/data/downloads.yaml). */
+import LocalizedText from '../ui/LocalizedText.astro';
+import { formatBytes } from '../../lib/assets';
+import { formatDate, plural, useTranslations, type Locale } from '../../lib/i18n';
+import { getDownloads } from '../../lib/profile';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+const downloads = await getDownloads(locale);
+---
+
+<div class="grid grid-cols-[minmax(0,1fr)] gap-6 md:grid-cols-2">
+  {
+    downloads.map((doc) => (
+      <article class="flex flex-col rounded-sm border border-line bg-surface p-6" data-download={doc.id}>
+        <h3 class="text-3xl font-medium">
+          <LocalizedText value={doc.title} locale={locale} />
+        </h3>
+        <LocalizedText value={doc.description} locale={locale} as="p" class="mt-2 text-muted" />
+        <ul class="mt-6 space-y-3 border-t border-line pt-4">
+          {doc.files.map((file) => (
+            <li class="flex flex-wrap items-center justify-between gap-3" data-download-lang={file.lang}>
+              <span>
+                <span class="block font-semibold" lang={file.lang}>
+                  {t(`lang.name.${file.lang}`)}
+                </span>
+                <span class="eyebrow block">
+                  PDF · {plural(t, 'downloads.pages', file.pages)} · {formatBytes(file.bytes)} ·{' '}
+                  {t('downloads.updated', { date: formatDate(file.updated, locale, { year: 'numeric', month: 'short', day: 'numeric' }) })}
+                </span>
+              </span>
+              <span class="flex gap-2">
+                <a href={file.url} download={file.name} class="btn btn-primary py-2 text-xs">
+                  ↓ {t('downloads.download')}
+                </a>
+                <a href={file.url} target="_blank" rel="noopener" class="btn btn-ghost py-2 text-xs">
+                  {t('downloads.open')} ↗
+                </a>
+              </span>
+            </li>
+          ))}
+        </ul>
+      </article>
+    ))
+  }
+</div>

@@ -71,6 +71,14 @@
     scrollbar-gutter: stable;
   }
 
+  /*
+   * Kolon şablonu verilmemiş grid'ler tek esnek kolon olsun. Tarayıcı varsayılanı (auto) içerikteki en uzun
+   * kelime/kod satırı kadar genişler ve mobilde sayfayı yatay taşırır. grid-cols-* sınıfları bunu ezer.
+   */
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   /* Lightbox açıkken arka plan kaymaz */
   html.lb-open {
     overflow: hidden;

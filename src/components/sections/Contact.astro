@@ -1,0 +1,54 @@
+---
+/** İletişim: davet metni, e-posta (kopyala + mailto), sosyal linkler. Form yok. */
+import CopyButton from '../ui/CopyButton.astro';
+import LocalizedText from '../ui/LocalizedText.astro';
+import { getSite } from '../../lib/content';
+import { useTranslations, type Locale } from '../../lib/i18n';
+import { socialLinks } from '../../lib/profile';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+const site = await getSite();
+const socials = socialLinks(site.socials);
+---
+
+<div class="grid grid-cols-[minmax(0,1fr)] gap-12 md:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] md:gap-16">
+  <div>
+    <LocalizedText value={site.contactText} locale={locale} as="p" class="font-display text-3xl leading-tight md:text-5xl" />
+    <p class="eyebrow mt-10">{t('contact.email')}</p>
+    <div class="mt-2 flex flex-wrap items-center gap-3">
+      <a href={`mailto:${site.email}`} class="font-display text-2xl break-all text-accent-text underline decoration-1 underline-offset-8 hover:decoration-2 md:text-4xl" data-email>
+        {site.email}
+      </a>
+      <CopyButton locale={locale} text={site.email} label={t('contact.copyEmail')} class="border border-line" />
+    </div>
+  </div>
+
+  {
+    socials.length > 0 && (
+      <div>
+        <p class="eyebrow">{t('contact.elsewhere')}</p>
+        <ul class="mt-2 border-t border-line">
+          {socials.map((social) => (
+            <li class="border-b border-line">
+              <a
+                href={social.url}
+                target="_blank"
+                rel="noopener me"
+                class="group flex items-center justify-between py-4 text-xl transition-colors hover:text-accent-text"
+                data-social={social.key}
+              >
+                {social.label}
+                <span class="text-muted transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" aria-hidden="true">↗</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )
+  }
+</div>

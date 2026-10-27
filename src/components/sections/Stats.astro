@@ -1,0 +1,43 @@
+---
+/**
+ * Sayaçlar (src/data/stats.yaml). HTML'de son değer yazılıdır; JS ekrana girince 0'dan sayar.
+ * Ekran okuyucu animasyonlu sayıyı değil, gizli metindeki son değeri okur.
+ */
+import { formatNumber, useTranslations, type Locale } from '../../lib/i18n';
+import { getStats } from '../../lib/stats';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+const stats = await getStats(locale);
+---
+
+{
+  stats.length > 0 && (
+    <dl class="mt-20 grid grid-cols-2 border-t border-line md:mt-28 md:grid-cols-4" aria-label={t('stats.label')}>
+      {stats.map((stat, i) => (
+        <div class:list={['flex flex-col-reverse gap-2 border-b border-line py-6 md:border-b-0', i % 2 === 1 && 'pl-5 md:pl-0', i > 0 && 'md:pl-6']}>
+          <dt class="text-sm text-muted">{stat.label}</dt>
+          <dd class="font-display text-5xl font-medium tracking-tight md:text-6xl" data-stat={stat.id}>
+            <span aria-hidden="true">
+              <span data-counter={stat.value}>{formatNumber(stat.value, locale)}</span>
+              {stat.suffix && <span class="text-accent-text">{stat.suffix}</span>}
+            </span>
+            <span class="sr-only">
+              {formatNumber(stat.value, locale)}
+              {stat.suffix}
+            </span>
+          </dd>
+        </div>
+      ))}
+    </dl>
+  )
+}
+
+<script>
+  import { initCounters } from '../../scripts/counters';
+  initCounters();
+</script>
