@@ -1,0 +1,60 @@
+---
+import { getImage } from 'astro:assets';
+import { getSite } from '../../lib/content';
+import { l, LOCALES, DEFAULT_LOCALE, type Locale } from '../../lib/i18n';
+import { absoluteUrl, alternatePath, withBase } from '../../lib/urls';
+
+interface Props {
+  locale: Locale;
+  title?: string;
+  description?: string;
+  image?: ImageMetadata;
+  noindex?: boolean;
+}
+
+const { locale, title, description, image, noindex = false } = Astro.props;
+const site = await getSite();
+
+const fullTitle = title ? `${title} — ${site.name}` : site.name;
+const metaDescription = description || l(site.description, locale);
+const canonical = absoluteUrl(Astro.url.pathname);
+const alternates = LOCALES.map((lang) => ({ lang, href: absoluteUrl(alternatePath(Astro.url.pathname, lang)) }));
+const ogImage = image ? await getImage({ src: image, width: 1200, height: 630, format: 'jpg' }) : undefined;
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{fullTitle}</title>
+<meta name="description" content={metaDescription} />
+{noindex && <meta name="robots" content="noindex" />}
+<link rel="canonical" href={canonical} />
+{alternates.map((a) => <link rel="alternate" hreflang={a.lang} href={a.href} />)}
+<link
+  rel="alternate"
+  hreflang="x-default"
+  href={alternates.find((a) => a.lang === DEFAULT_LOCALE)!.href}
+/>
+<link rel="sitemap" href={withBase('sitemap-index.xml')} />
+<link rel="icon" type="image/svg+xml" href={withBase('favicon.svg')} />
+<meta name="theme-color" content="#131211" />
+
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content={site.name} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={metaDescription} />
+<meta property="og:url" content={canonical} />
+<meta property="og:locale" content={locale === 'tr' ? 'tr_TR' : 'en_US'} />
+{ogImage && <meta property="og:image" content={absoluteUrl(ogImage.src)} />}
+<meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
+
+<!-- Tema: ilk boyamadan önce uygulanır ki sayfa yanıp sönmesin. Varsayılan koyu. -->
+<script is:inline>
+  (function () {
+    var theme = 'dark';
+    try {
+      var saved = localStorage.getItem('theme');
+      if (saved === 'light' || saved === 'dark') theme = saved;
+    } catch (e) {}
+    document.documentElement.dataset.theme = theme;
+  })();
+</script>

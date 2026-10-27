@@ -1,0 +1,26 @@
+---
+/**
+ * İki dilli içerik metni. Sayfanın dili boşsa diğer dile düşer ve o metne doğru `lang` verir
+ * (ekran okuyucu doğru telaffuz etsin diye).
+ */
+import type { HTMLTag } from 'astro/types';
+import { localize, type Locale, type Localized } from '../../lib/i18n';
+
+interface Props {
+  value: Localized;
+  locale: Locale;
+  as?: HTMLTag;
+  class?: string;
+}
+
+const { value, locale, as: Tag = 'span', class: className } = Astro.props;
+const resolved = localize(value, locale);
+---
+
+{
+  resolved && (
+    <Tag class={className} lang={resolved.isFallback ? resolved.lang : undefined} data-fallback={resolved.isFallback ? '' : undefined}>
+      {resolved.text}
+    </Tag>
+  )
+}

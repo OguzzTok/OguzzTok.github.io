@@ -1,0 +1,40 @@
+# Hakkımda bölümü. Fotoğraf: src/data/about/photo.jpg (dikey, en az 900x1200 önerilir).
+# ÖRNEK METİN — kendi biyografinle değiştir.
+photo:
+  src: ./about/photo.jpg
+  alt:
+    en: Portrait photo
+    tr: Portre fotoğrafı
+bio:
+  en: |-
+    Sample biography — replace this with your own. Write two or three short paragraphs about what kind of games you like to make and what you are learning right now.
+
+    Leave an empty line between paragraphs.
+  tr: |-
+    Örnek biyografi — bunu kendi metninle değiştir. Ne tür oyunlar yapmayı sevdiğini ve şu an neler öğrendiğini iki üç kısa paragrafta anlat.
+
+    Paragraflar arasına boş bir satır bırak.
+school:
+  en: '' # TODO: okul adı
+  tr: ''
+city:
+  en: '' # TODO: şehir
+  tr: ''
+since: 2022 # TODO: doğrula
+toolbox:
+  - group: { en: Engine & code, tr: Motor ve kod }
+    items:
+      - tool: unity
+      - tool: csharp
+      - tool: git
+        level: basic
+  - group: { en: 3D & 2D art, tr: 3D ve 2D sanat }
+    items:
+      - tool: blender
+      - tool: substance-painter
+        level: basic
+      - tool: photoshop
+      - tool: aseprite
+  - group: { en: Design, tr: Tasarım }
+    items:
+      - tool: figma

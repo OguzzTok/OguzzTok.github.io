@@ -1,0 +1,60 @@
+---
+import LangToggle from '../ui/LangToggle.astro';
+import ThemeToggle from '../ui/ThemeToggle.astro';
+import { getSite } from '../../lib/content';
+import { useTranslations, type Locale } from '../../lib/i18n';
+import { SECTIONS } from '../../lib/sections';
+import { pagePath, sectionPath } from '../../lib/urls';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+const site = await getSite();
+---
+
+<header class="sticky top-0 z-40 border-b border-line bg-bg/85 backdrop-blur-md">
+  <div class="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 px-4 sm:px-6">
+    <a href={pagePath(locale)} class="py-4 font-display text-xl font-semibold tracking-tight">
+      {site.name}
+    </a>
+
+    <!-- Mobilde ikinci satıra iner ve yatay kaydırılır; JS gerektirmez. -->
+    <nav aria-label={t('nav.label')} class="order-last -mx-4 w-[calc(100%+2rem)] md:order-none md:mx-0 md:ml-auto md:w-auto">
+      <ul class="nav-scroll flex gap-5 overflow-x-auto px-4 pb-3 text-sm whitespace-nowrap md:gap-7 md:p-0">
+        {
+          SECTIONS.map((s) => (
+            <li>
+              <a href={sectionPath(locale, s.id)} class="text-muted transition-colors hover:text-fg">
+                {t(s.nav)}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="ml-auto flex items-center gap-1 md:ml-0">
+      <LangToggle locale={locale} />
+      <ThemeToggle locale={locale} />
+    </div>
+  </div>
+</header>
+
+<style>
+  /* Mobilde kaydırma çubuğu gizli; sağ kenardaki solma devamı olduğunu gösterir. */
+  .nav-scroll {
+    scrollbar-width: none;
+    mask-image: linear-gradient(to right, black calc(100% - 2.5rem), transparent);
+  }
+  .nav-scroll::-webkit-scrollbar {
+    display: none;
+  }
+  @media (min-width: 48rem) {
+    .nav-scroll {
+      mask-image: none;
+    }
+  }
+</style>

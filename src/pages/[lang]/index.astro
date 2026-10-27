@@ -1,0 +1,56 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import LocalizedText from '../../components/ui/LocalizedText.astro';
+import SectionHeading from '../../components/ui/SectionHeading.astro';
+import { getSite } from '../../lib/content';
+import { LOCALES, l, useTranslations, type Locale } from '../../lib/i18n';
+import { getProjects } from '../../lib/projects';
+import { SECTIONS, sectionNumber } from '../../lib/sections';
+import { sectionPath } from '../../lib/urls';
+import { printTranslationReport } from '../../lib/translation-report';
+
+export async function getStaticPaths() {
+  await printTranslationReport();
+  return LOCALES.map((lang) => ({ params: { lang } }));
+}
+
+const locale = Astro.params.lang as Locale;
+const t = useTranslations(locale);
+const site = await getSite();
+const projects = await getProjects();
+---
+
+<BaseLayout locale={locale}>
+  <!-- Hero: Faz 4'te istatistiklerle birlikte son hâlini alacak -->
+  <section class="mx-auto max-w-6xl px-4 pt-20 pb-24 sm:px-6 md:pt-32">
+    <LocalizedText value={site.eyebrow} locale={locale} as="p" class="eyebrow mb-6" />
+    <h1 class="text-6xl font-medium md:text-8xl">{site.name}</h1>
+    <LocalizedText value={site.intro} locale={locale} as="p" class="mt-6 max-w-[52ch] text-lg text-muted md:text-xl" />
+    <div class="mt-10 flex flex-wrap gap-3">
+      <a href={sectionPath(locale, 'projects')} class="btn btn-primary">{t('hero.cta.projects')}</a>
+      <a href={sectionPath(locale, 'contact')} class="btn btn-ghost">{t('hero.cta.contact')}</a>
+    </div>
+  </section>
+
+  {
+    SECTIONS.map((section) => (
+      <section class="mx-auto max-w-6xl scroll-mt-24 px-4 py-16 sm:px-6" aria-labelledby={`${section.id}-title`} id={section.id}>
+        <SectionHeading number={sectionNumber(section.id)} title={t(section.title)} id={`${section.id}-title`} />
+        {section.id === 'projects' ? (
+          // Geçici liste: Faz 2'de sekmeli grid ile değişecek. Fallback'i görmek için burada.
+          <ul class="grid gap-4 sm:grid-cols-2">
+            {projects.map((p) => (
+              <li class="rounded-sm border border-line bg-surface p-5">
+                <p class="eyebrow">{p.data.category.id} · {t(`status.${p.data.status}`)}</p>
+                <h3 class="mt-2 text-2xl">{l(p.data.title, locale)}</h3>
+                <LocalizedText value={p.data.summary} locale={locale} as="p" class="mt-2 text-muted data-fallback:italic" />
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p class="text-muted">{t('wip.notice')}</p>
+        )}
+      </section>
+    ))
+  }
+</BaseLayout>

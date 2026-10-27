@@ -1,0 +1,44 @@
+---
+import { useTranslations, type Locale } from '../../lib/i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const t = useTranslations(Astro.props.locale);
+---
+
+<button
+  type="button"
+  data-theme-toggle
+  aria-pressed="false"
+  aria-label={t('theme.toggle')}
+  title={t('theme.toggle')}
+  class="grid size-10 place-items-center rounded-sm text-muted transition-colors hover:bg-surface-2 hover:text-fg"
+>
+  <!-- Koyu temada güneş (açığa geç), açık temada ay (koyuya geç) -->
+  <svg class="theme-icon-sun size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+    <circle cx="12" cy="12" r="4"></circle>
+    <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+  </svg>
+  <svg class="theme-icon-moon size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+    <path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z"></path>
+  </svg>
+</button>
+
+<style>
+  .theme-icon-moon {
+    display: none;
+  }
+  :global([data-theme='light']) .theme-icon-moon {
+    display: block;
+  }
+  :global([data-theme='light']) .theme-icon-sun {
+    display: none;
+  }
+</style>
+
+<script>
+  import { initThemeToggle } from '../../scripts/theme';
+  initThemeToggle();
+</script>

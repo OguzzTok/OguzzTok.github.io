@@ -1,0 +1,55 @@
+---
+/**
+ * Kök `/` sayfası: kayıtlı dil tercihine göre /en/ veya /tr/'ye yönlendirir.
+ * Tercih yoksa İngilizce (varsayılan). JS kapalıysa meta refresh + elle seçilebilen linkler.
+ */
+import { getSite } from '../lib/content';
+import { DEFAULT_LOCALE, LOCALES } from '../lib/i18n';
+import { absoluteUrl, pagePath, withBase } from '../lib/urls';
+
+const site = await getSite();
+const targets = Object.fromEntries(LOCALES.map((locale) => [locale, pagePath(locale)]));
+const fallback = targets[DEFAULT_LOCALE];
+---
+
+<!doctype html>
+<html lang={DEFAULT_LOCALE}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{site.name}</title>
+    <meta name="robots" content="noindex" />
+    <link rel="canonical" href={absoluteUrl(fallback)} />
+    <link rel="icon" type="image/svg+xml" href={withBase('favicon.svg')} />
+    <script is:inline define:vars={{ targets, fallback }}>
+      var target = fallback;
+      try {
+        var saved = localStorage.getItem('lang');
+        if (saved && targets[saved]) target = targets[saved];
+      } catch (e) {}
+      location.replace(target + location.search + location.hash);
+    </script>
+    <noscript><meta http-equiv="refresh" content={`0; url=${fallback}`} /></noscript>
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        background: #131211;
+        color: #ede6da;
+        font: 16px/1.5 system-ui, sans-serif;
+      }
+      a {
+        color: #a3adff;
+        margin: 0 0.75rem;
+      }
+    </style>
+  </head>
+  <body>
+    <p>
+      <a href={targets.en} hreflang="en" lang="en">English</a>
+      <a href={targets.tr} hreflang="tr" lang="tr">Türkçe</a>
+    </p>
+  </body>
+</html>

@@ -1,0 +1,18 @@
+# Araç listesi. Projelerde ve Hakkımda'daki araç kutusunda buradaki `id` kullanılır.
+# Yeni araç = yeni kayıt. `id` küçük harf ve tire, `label` sitede görünen ad.
+- id: unity
+  label: Unity
+- id: csharp
+  label: C#
+- id: blender
+  label: Blender
+- id: substance-painter
+  label: Substance Painter
+- id: photoshop
+  label: Photoshop
+- id: figma
+  label: Figma
+- id: aseprite
+  label: Aseprite
+- id: git
+  label: Git

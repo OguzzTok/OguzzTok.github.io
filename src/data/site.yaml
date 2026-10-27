@@ -1,0 +1,25 @@
+# Sitenin genel bilgileri. Boş bırakılan sosyal linkler sitede görünmez.
+name: OguzzTok # TODO: sitede görünecek gerçek ad
+eyebrow:
+  en: GAME DESIGN STUDENT · UNITY · C#
+  tr: OYUN TASARIMI ÖĞRENCİSİ · UNITY · C#
+intro:
+  en: I design and build small games, levels and 3D assets. Currently studying Digital Game Design.
+  tr: Küçük oyunlar, bölümler ve 3D modeller tasarlayıp geliştiriyorum. Dijital Oyun Tasarımı öğrencisiyim.
+description:
+  en: Game design portfolio — games, 3D models and design work.
+  tr: Oyun tasarımı portfolyosu — oyunlar, 3D modeller ve tasarım çalışmaları.
+email: hello@example.com # TODO: gerçek e-posta adresi
+contactText:
+  en: Looking for an intern, a jam teammate or just want to talk games? Drop me a line.
+  tr: Stajyer, jam takım arkadaşı mı arıyorsun ya da sadece oyun konuşmak mı istiyorsun? Yaz bana.
+socials:
+  github: https://github.com/OguzzTok
+  itch: ''
+  steam: ''
+  youtube: ''
+  linkedin: ''
+  behance: ''
+  artstation: ''
+  sketchfab: ''
+  discord: ''

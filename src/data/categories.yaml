@@ -1,0 +1,19 @@
+# Proje sekmeleri. Yeni sekme = yeni kayıt. `id` URL'de kullanılır (küçük harf, tire).
+# mode: detail → karta tıklayınca detay sayfası · lightbox → sayfada lightbox açılır
+- id: games
+  name: { en: Games, tr: Oyunlar }
+  order: 1
+  visible: true
+  mode: detail
+
+- id: models
+  name: { en: Models, tr: Modeller }
+  order: 2
+  visible: true
+  mode: lightbox
+
+- id: designs
+  name: { en: Designs, tr: Tasarımlar }
+  order: 3
+  visible: true
+  mode: lightbox

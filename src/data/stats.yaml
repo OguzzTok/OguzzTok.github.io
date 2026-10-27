@@ -1,0 +1,23 @@
+# Ana sayfadaki sayaçlar (3-4 tane önerilir). Üç tür var:
+#   manual     → value elle yazılır
+#   count      → build sırasında proje sayısı hesaplanır (status ve/veya category ile süzülebilir)
+#   yearsSince → `year`dan bu yana geçen yıl (build tarihine göre)
+- id: years
+  kind: yearsSince
+  year: 2022 # TODO: başlangıç yılını doğrula
+  label: { en: years making games, tr: yıldır oyun yapıyorum }
+
+- id: released
+  kind: count
+  status: released
+  label: { en: games released, tr: yayınlanan oyun }
+
+- id: jams
+  kind: count
+  status: jam
+  label: { en: game jams, tr: game jam }
+
+- id: models
+  kind: count
+  category: models
+  label: { en: 3D models, tr: 3D model }

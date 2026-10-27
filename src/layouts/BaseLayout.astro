@@ -1,0 +1,42 @@
+---
+import '@fontsource-variable/fraunces';
+import '@fontsource-variable/instrument-sans';
+import '@fontsource-variable/jetbrains-mono';
+import '../styles/global.css';
+import Head from '../components/layout/Head.astro';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+import { useTranslations, type Locale } from '../lib/i18n';
+
+interface Props {
+  locale: Locale;
+  /** Sayfa başlığı; yoksa sadece site adı */
+  title?: string;
+  description?: string;
+  image?: ImageMetadata;
+  noindex?: boolean;
+}
+
+const { locale, ...seo } = Astro.props;
+const t = useTranslations(locale);
+---
+
+<!doctype html>
+<html lang={locale} data-theme="dark">
+  <head>
+    <Head locale={locale} {...seo} />
+  </head>
+  <body class="flex min-h-dvh flex-col">
+    <a
+      href="#main"
+      class="sr-only z-50 rounded-sm bg-accent px-4 py-2 text-accent-on focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
+    >
+      {t('a11y.skip')}
+    </a>
+    <Header locale={locale} />
+    <main id="main" class="flex-1">
+      <slot />
+    </main>
+    <Footer locale={locale} />
+  </body>
+</html>

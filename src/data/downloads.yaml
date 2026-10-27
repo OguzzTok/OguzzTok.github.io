@@ -1,0 +1,19 @@
+# İndirilebilir PDF'ler. Dosyalar src/data/downloads/ altında durur.
+# Bir dil yoksa o satırı sil; sadece var olan dil gösterilir.
+# ÖRNEK DOSYALAR — kendi PDF'lerinle değiştir.
+- id: cv
+  title: { en: CV, tr: Özgeçmiş }
+  description:
+    en: One-page résumé with education, skills and projects.
+    tr: Eğitim, beceriler ve projeleri içeren tek sayfalık özgeçmiş.
+  files:
+    en: { file: cv-en.pdf, pages: 1, updated: 2026-10-01 }
+    tr: { file: cv-tr.pdf, pages: 1, updated: 2026-10-01 }
+
+- id: portfolio
+  title: { en: Portfolio, tr: Portfolyo }
+  description:
+    en: Selected projects in a printable format.
+    tr: Seçili projeler, yazdırılabilir formatta.
+  files:
+    en: { file: portfolio-en.pdf, pages: 1, updated: 2026-10-01 }
