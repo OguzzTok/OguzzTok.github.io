@@ -20,8 +20,9 @@ Sunucu, veritabanı, CMS **yok**: tüm içerik bu repodaki dosyalardır. Kullan�
 
 Altı fazın hepsi tamam (kurulum, projeler, detay sayfası, ana sayfa bölümleri, SEO/test/CI, rehber).
 Lightbox tarifi Faz 6'da baştan sona denendi (büyük görsel küçültme → şablon → build → test).
-GitHub'a ilk gönderim ve Pages kurulumu README.md'deki adımlarla kullanıcı tarafından yapılacak; remote tanımlı değilse
-(`git remote -v` boş) push etme, kullanıcıya README'yi hatırlat.
+GitHub kurulumu tamam (2026-10-27): repo `OguzzTok/OguzzTok.github.io` (public), Pages kaynağı GitHub Actions, ilk deploy
+başarılı. Commit e-postası GitHub gizli adresi (`244495561+OguzzTok@users.noreply.github.com`, repo-yerel `user.email`).
+CI sadece `main` push'unda çalışır; PR'lar CI'da test edilmez, PR açmadan önce testleri yerelde çalıştır.
 
 Gerçek bilgiler girildi: ad, e-posta, okul, şehir, başlangıç yılı, TR biyografi, araç kutusu,
 sosyal linkler (GitHub, LinkedIn, Behance), 3 sertifika, ilk gerçek proje `mental-impass` (öne çıkan).
