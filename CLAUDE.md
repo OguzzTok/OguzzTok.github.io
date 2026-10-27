@@ -1,205 +1,144 @@
 # Portfolyo — Claude için çalışma rehberi
 
-Kişisel oyun tasarımı portfolyosu. Astro (statik) + Tailwind, GitHub Pages'te yayınlanır.
+Oğuz Tok'un kişisel oyun tasarımı portfolyosu. Astro 7 (statik) + Tailwind 4, GitHub Pages'te yayınlanır:
+https://oguzztok.github.io/ (repo: `OguzzTok/OguzzTok.github.io`).
 Sunucu, veritabanı, CMS **yok**: tüm içerik bu repodaki dosyalardır. Kullanıcı yeni içeriği
 "şu resimlerle Modeller'e yeni proje ekle" gibi cümlelerle ister; bu dosyadaki tarifleri izle.
 
-Kullanıcı bu teknolojilerde yeni: önemli kararları ve çalıştırdığın komutları kısaca açıkla.
-Türkçe yaz, teknik terimleri İngilizce bırak.
+## Kullanıcıyla çalışma
+
+- Kullanıcı dijital oyun tasarımı öğrencisi, bu teknolojilerde yeni. Türkçe yaz, teknik terimleri İngilizce bırak.
+  Önemli kararları ve çalıştırdığın komutları **bir cümleyle** açıkla.
+- **Bilgi uydurma.** Tarih, araçlar, takım büyüklüğü, linkler, metin, çeviri eksikse sor (aşağıdaki soru listesi).
+  Çeviriyi kullanıcı isterse yap; istemezse o dili boş bırak (fallback çalışır, build raporunda görünür).
+  Kendi çevirini veya yazdığın metni kullanıcıya göster, onaylamasını iste.
+- Sitedeki her bilgi herkese açık (public repo). Telefon, adres, TCKN gibi kişisel bilgileri ekleme; gelirse uyar.
+- Kod değişikliği gerektiren isteklerde (yeni bölüm, yeni blok tipi, tasarım değişikliği) önce kısa plan sun, onay al.
+  Daha iyi bir yol varsa uygulamadan önce söyle.
 
 ## Durum
 
-| Faz | İçerik | Durum |
-|---|---|---|
-| 1 | Kurulum, şemalar, örnek içerik, i18n, layout, tema | ✅ |
-| 2 | Proje sekmeleri, kartlar, filtre, öne çıkan kart, lightbox + 3D | ✅ |
-| 3 | Detay sayfası ve medya blokları | ✅ |
-| 4 | Hero + istatistikler, hakkımda, sertifikalar, indirmeler, iletişim, 404 | ✅ |
-| 5 | SEO, performans, Playwright, GitHub Actions deploy, boyut kontrolü | ✅ |
-| 6 | Bu rehberin tamamlanması, README'de GitHub Pages kurulumu | ⏳ |
+Altı fazın hepsi tamam (kurulum, projeler, detay sayfası, ana sayfa bölümleri, SEO/test/CI, rehber).
+Lightbox tarifi Faz 6'da baştan sona denendi (büyük görsel küçültme → şablon → build → test).
+GitHub'a ilk gönderim ve Pages kurulumu README.md'deki adımlarla kullanıcı tarafından yapılacak; remote tanımlı değilse
+(`git remote -v` boş) push etme, kullanıcıya README'yi hatırlat.
 
-Gerçek bilgiler girildi (ad, e-posta, okul, şehir, başlangıç yılı, TR biyografi, araç kutusu).
-Hâlâ bekleyenler (uydurma, kullanıcıya sor): gerçek fotoğraf (`src/data/about/photo.jpg` + `about.yaml` alt metni),
-sosyal linkler (şu an sadece GitHub), CV/portfolyo PDF'leri. İngilizce biyografi kullanıcının Türkçe metninden
-çevrildi; kullanıcı onaylamadıysa değiştirme isteğine açık ol. E-posta okul adresi: mezuniyette değişebilir.
-Örnek içerik (başlığında "sample/örnek" geçen her şey) kullanıcı kendi içeriğini ekledikçe silinir.
+Gerçek bilgiler girildi: ad, e-posta, okul, şehir, başlangıç yılı, TR biyografi, araç kutusu.
+**Hâlâ bekleyenler** (uydurma, fırsat oldukça sor):
+- Gerçek fotoğraf → `src/data/about/photo.jpg` + `about.yaml` alt metni ("Oğuz Tok'un portresi" gibi).
+- Sosyal linkler (şu an sadece GitHub) → `src/data/site.yaml`.
+- CV / portfolyo PDF'leri (şu an örnek) → bkz. tarif.
+- İngilizce biyografi ve hero tanıtım cümlesini Claude yazdı; kullanıcı değiştirmek isterse açık ol.
+- E-posta okul adresi (`posta.mu.edu.tr`): mezuniyette kapanabilir.
 
-## Komutlar
+**Örnek içerik** hâlâ sitede (başlığında "sample/örnek" geçen her şey): projeler `lantern-keeper`, `tiny-dungeon`,
+`lowpoly-crate`, `poster-series`; sertifika `sample-certificate`; PDF'ler. Kullanıcı kendi içeriğini ekledikçe
+"Örnek içeriği temizleme" tarifiyle sil. `_template-*` klasörleri **silinmez** (draft şablonlar).
 
-| Komut | Ne yapar |
-|---|---|
-| `npm run dev` | Geliştirme sunucusu: http://localhost:4321 (kayıtta otomatik yenilenir) |
-| `npm run check` | TypeScript + Astro tip kontrolü |
-| `npm run build` | Siteyi `dist/`'e derler; içerik şemaya uymuyorsa durur, eksik çevirileri listeler |
-| `npm run preview` | `dist/`'i yerelde yayınlar (GitHub Pages'teki hâlin aynısı) |
-| `npm test` | Playwright testleri (`dist/`'i 4322 portunda açar). **Önce `npm run build`** |
-| `npm run check:sizes` | Dosya boyutu kontrolü: >20 MB uyarı, >90 MB hata, görsel >5 MB uyarı, site >1 GB hata |
-| `npm run samples` | Örnek yer tutucu görsel/glb/pdf'leri üretir (sadece eksik olanları) |
+---
 
-Test notları:
-- Açık bir `npm run preview` varsa testten önce kapat (`npx astro preview stop`); Astro 7 iki preview'a izin vermez.
-  `npm run dev` (4321) testlerle çakışmaz.
-- Testler içerikten bağımsız: sayıları sayfadan okur, uygun içerik yoksa ilgili test **atlanır** (skip), kırılmaz.
-  Örnek içerik silinince bazı testler (3D, fallback, önceki/sonraki) atlanabilir; bu normal.
-- Lightbox testlerinde ok/ESC'den önce `waitForLightbox()` çağır: PhotoSwipe açılış animasyonunda tuşları yok sayar
-  (script bitince `.pswp[data-ready]` ekler).
-- Base yolu testi (Git Bash'te yol dönüşümünü kapatarak):
-  `MSYS_NO_PATHCONV=1 BASE_PATH=/portfolio npm run build && MSYS_NO_PATHCONV=1 BASE_PATH=/portfolio npm test`
-  Sonra normal build'i tekrar al.
-- Lighthouse (yerelde, isteğe bağlı): Lighthouse'un kendi Chrome başlatıcısı bu makinede `spawn UNKNOWN` veriyor.
-  Playwright'ın Chromium'unu `--remote-debugging-port=9222` ile açıp `npx lighthouse@13.5.0 <url> --port=9222` ile bağlan.
-  Son ölçüm (Faz 5, mobil): tüm sayfalar performans 98, erişilebilirlik/en iyi uygulamalar/SEO 100.
+## İçerik ekleme akışı (her istekte)
 
-CI (`.github/workflows/deploy.yml`, main'e push veya elle): npm ci → check → build → check:sizes → Playwright →
-aynı `dist/` Pages'e yüklenir → deploy. Herhangi biri başarısızsa yayın olmaz. Base yolu `actions/configure-pages`'ten
-gelir (OguzzTok.github.io için boş). Test başarısız olursa rapor "playwright-report" artifact'ında (7 gün).
-
-Windows'ta Node `C:\Program Files\nodejs` altında. Bash'te `node` bulunamazsa:
-`export PATH="/c/Program Files/nodejs:$PATH"`.
-
-## Mimari (kısa)
-
-- `src/content.config.ts` — **tüm zod şemaları**. Alan eklemek/değiştirmek buradan başlar.
-- `src/content/projects/<slug>/` — her proje kendi klasöründe (bkz. tarifler).
-- `src/content/certificates/<slug>.yaml` — sertifikalar.
-- `src/data/*.yaml` — site geneli veriler (site, kategoriler, araçlar, istatistikler, hakkımda, indirmeler).
-- `src/i18n/{en,tr}.json` — arayüz metinleri. İki dosyada aynı anahtarlar olmalı (eksikse `npm run check` hata verir).
-- `src/lib/` — içerik okuma ve dönüştürme. Sayfalar içeriğe **sadece** buradan erişir:
-  `i18n.ts` (t(), localize(), fallback), `urls.ts` (base uyumlu linkler), `projects.ts` (sıralama, doğrulama),
-  `content.ts` (tekil veriler), `assets.ts` (glb/pdf URL ve boyut), `sections.ts` (ana sayfa bölüm sırası),
-  `translation-report.ts` (build'de eksik çeviri raporu).
-  `explorer.ts` (proje gezgininin tüm verisi: sekmeler, filtreler, lightbox JSON), `lightbox.ts` (lightbox görselleri).
-- `src/components/` — küçük, tek sorumluluklu bileşenler. Bileşenlere sabit metin yazılmaz; metin
-  `src/i18n/*.json` veya `src/data/` dosyalarından gelir.
-  `projects/ProjectsExplorer.astro` hem ana sayfada (urlMode `none`) hem `/projects/` sayfalarında (urlMode `push`) kullanılır.
-- `src/scripts/` — tarayıcıda çalışan vanilla TypeScript:
-  `theme.ts`, `lang.ts`, `projects/` (durum + sekmeler + filtreler), `lightbox/` (PhotoSwipe + 3D, ilk tıklamada yüklenir).
-
-Projeler bölümü nasıl çalışır:
-- Her proje sayfası (`/en/projects/`, `/en/projects/<kategori>/`) **tüm** kartları içerir; aktif sekmede olmayanlar
-  `hidden` gelir. JS kapalıyken sekmeler normal linktir. JS açılınca sekmeler ARIA tablist olur, sayfa yenilenmeden
-  süzer ve adres çubuğunu günceller (`history.pushState`). Boş kategorinin sekmesi ve sayfası üretilmez.
-- Filtre: her gruptan (etiket, araç) en fazla bir seçim; sekme değişince sıfırlanır. JS kapalıysa gizli.
-- Lightbox: görünen lightbox kartlarının tüm görselleri tek listede; ok tuşları projeler arası geçer.
-  `?item=<slug>` linki doğrudan açar. 3D açıkken ok/ESC tuşları modele aittir, ESC önce 3D'yi kapatır.
-  JS kapalıysa kart büyük WebP görsele linktir.
-- Paket boyutları: sekme/filtre ~6 KB her sayfada; PhotoSwipe ~65 KB ilk tıklamada; model-viewer ~1 MB
-  sadece "3D Görüntüle"ye basınca.
-
-Detay sayfası (`src/pages/[lang]/projects/[category]/[slug].astro`, sadece detail modundaki kategoriler):
-- Sıra: geri linki → rozet/etiketler/başlık/özet/aksiyon butonları → hero (kapak; `links.trailer` varsa tıklayınca
-  oynayan fragman) → metin (`en.md`/`tr.md`) → `gallery` alanı ("Galeri") → `blocks` (yazıldığı sırayla) → önceki/sonraki.
-  Yanda künye (`components/detail/SpecSheet.astro`), mobilde metnin üstünde.
-- Metindeki her `## ` başlığı otomatik numaralanır (01, 02, 03). Build, 3'ten farklı bölüm sayısında uyarı verir.
-- YouTube / itch.io / 3D: tıklanana kadar dış siteye istek gitmez (`scripts/embeds.ts`). YouTube `youtube-nocookie` ile açılır.
-- Bileşenler: `components/detail/` (sayfa parçaları), `components/media/` (bloklar; `MediaBlocks.astro` dağıtıcı).
-  Script'ler: `embeds.ts`, `gallery.ts` (galeri lightbox'ı), `copy.ts` (kopyala butonları, e-posta için de),
-  `model-viewer.ts` (lightbox ve model bloğunun ortak 3D yükleyicisi).
-
-Ana sayfa (`src/pages/[lang]/index.astro`): `sections/Hero.astro` (+ `Stats.astro`, sayaçlar `scripts/counters.ts`),
-sonra `src/lib/sections.ts` sırasıyla numaralı bölümler: Projeler, `About`, `Certificates`, `Downloads`, `Contact`
-(hepsi `src/components/sections/`). Veri okuyucular: `lib/stats.ts`, `lib/profile.ts` (sertifika, indirme, sosyal).
-- Sosyal linkler ikonsuz, tipografik liste (marka ikonu paketi eklenmedi). Sıra `lib/profile.ts` → `SOCIAL_LABELS`.
-- `stats.yaml` ve `downloads.yaml`'da ekrandaki sıra = dosyadaki sıra (`getCollectionInFileOrder`; Astro normalde id'ye göre sıralar).
-- 404 (`src/pages/404.astro` → `dist/404.html`): dil bilinemediği için mesaj iki dilde, header/footer yok (`chrome={false}`).
-
-Düzen kuralları:
-- Kolon şablonu verilmemiş `.grid` varsayılan olarak `minmax(0,1fr)` (global.css base katmanı). Çok kolonlu şablonlarda
-  da `minmax(0,Nfr)` kullan; düz `1fr` uzun kelime/kod satırında mobilde sayfayı yatay taşırır.
-- Sayfa içi bölümler arası boşluk `margin` ile verilir (padding değil); `#bölüm` linki başlığın hemen üstüne kayar.
-- Yatay şeritte öğe göstermek için `element.scrollIntoView()` **kullanma**: sayfayı da dikey kaydırır (açılışta sayfanın
-  sekmelere atlaması ve Lighthouse'ta LCP ölçülememesi bu yüzdendi). `scripts/dom.ts` → `revealHorizontally()`.
-- Kod blokları `github-dark-default` / `github-light-default` temasıyla (yorum satırı kontrastı ≥ 4.5:1). Başka tema
-  seçilirse kontrastı ölç.
-- İkon/düğmelerin erişilebilir adı görünen metni içermeli (WCAG 2.5.3); dokunma hedefi en az 24×24 px.
-
-SEO: her sayfada title/description, canonical, hreflang (en, tr, x-default), Open Graph (proje sayfasında kapak, diğerlerinde
-öne çıkan projenin kapağı: `lib/seo.ts`), ana sayfada schema.org `Person` JSON-LD, `robots.txt` (`src/pages/robots.txt.ts`),
-iki dilli sitemap. 404 ve kök yönlendirme sayfası `noindex`, sitemap'te yok.
-
-Yerelde test notu: `npm run preview` sayfaları tarayıcı önbelleğinden verebilir. Değişiklik görünmüyorsa adrese
-`?v=2` ekle veya sert yenile (Ctrl+F5).
-
-Kurallar:
-- İç linkler asla elle `"/..."` yazılmaz: `pagePath()`, `sectionPath()`, `withBase()` kullanılır (base değişebilir).
-- Dil: varsayılan **İngilizce**. Rotalar `/en/...` ve `/tr/...`. Kök `/` kayıtlı tercihe göre yönlendirir.
-  Header'daki EN/TR düğmesi aynı sayfanın diğer dildeki adresine gider. Her sayfa iki dilde de üretilir.
-- İçerikte iki dilli metin `{ en: ..., tr: ... }` şeklindedir. Bir dil boşsa diğerine düşülür (fallback)
-  ve `lang` özniteliği doğru verilir. En az bir dil zorunludur.
-- Tema: varsayılan koyu. Vurgu rengi tek değişken: `src/styles/global.css` → `--accent`.
-- Görsel yön: "Art Book" (Fraunces başlık, Instrument Sans metin, JetBrains Mono etiket; sıcak siyah/krem, kobalt vurgu).
-  Oyunlar görsel olarak öne çıkar (geniş 16:9 kartlar); modeller/tasarımlar galeri düzeninde.
-- Sayfa geçişleri tarayıcının View Transition API'si ile (CSS `@view-transition`). Astro `ClientRouter` kullanılmıyor:
-  script'ler normal sayfa yüklemesinde bir kez çalışır, `astro:page-load` gerekmez.
-- Astro 7 notları: Markdown varsayılan işlemcisi Sätteri (remark/rehype eklentisi gerekirse
-  `@astrojs/markdown-remark` + `markdown.processor` gerekir). `compressHTML: 'jsx'` varsayılan: satır içi
-  öğeler arasında boşluk gerekiyorsa `{' '}` yaz. Kapanmamış HTML etiketi build hatasıdır.
-- Belgeler: https://docs.astro.build (content collections, i18n, images rehberleri).
+1. **Dosyaları al.** Kullanıcı görselleri sohbete ekler ya da bilgisayardaki yolu verir (ör. `C:\Users\ogzog\Desktop\x.png`).
+   Dosyayı ilgili klasöre kopyala ve tarifteki adla yeniden adlandır.
+2. **Boyutu kontrol et.** Görsel > 5 MB veya uzun kenar > 2560 px → küçült (komut aşağıda). `.glb` > 20 MB → sıkıştırmayı öner.
+3. **Eksik bilgiyi sor** (tek mesajda, liste hâlinde). Proje için sorulacaklar:
+   - Başlık ve tek cümlelik açıklama (TR ve/veya EN)
+   - Kategori, durum (released / in-progress / prototype / jam), tarih (en azından ay/yıl)
+   - Kullanılan araçlar, etiketler
+   - Görsellerde ne olduğu (alt metin için; kısa)
+   - Linkler (itch.io, Steam, GitHub, fragman, Sketchfab, ArtStation)
+   - Oyunlarda: tür, motor, platformlar, takım (solo mu, kaç kişi), süre, yayıncı ve
+     "Nedir / Ben ne yaptım / Ne öğrendim" metinleri (takım projesinde kullanıcının **kendi** katkısı)
+   - Öne çıkan proje olsun mu?
+4. **Tarifi uygula** (aşağıda).
+5. **Son adımlar:**
+   1. `npm run build` — şema hatası varsa düzelt. Build sonundaki `[içerik] … uyarı` listesindeki **yeni** eksikleri kullanıcıya söyle.
+   2. `npm test` ve `npm run check:sizes` — başarısızsa push etme; düzelt ya da kullanıcıya açıkla.
+   3. Ne değiştiğini kısaca göster; kullanıcı isterse `npm run dev` ile bakabileceğini söyle.
+   4. Commit + push, `main`'e doğrudan (CI testleri geçmezse yayın yapılmaz). Conventional commits, Türkçe açıklama:
+      `feat(icerik): Modeller'e "Taş Kule" eklendi` · `fix(icerik): CV güncellendi` · `chore(icerik): örnek projeler silindi`.
+      Kod değişiklikleri (bileşen, script, şema) `feature/…` veya `fix/…` branch'inde yapılıp PR ile birleştirilir.
+   5. Push'tan sonra yayını kontrol et: https://github.com/OguzzTok/OguzzTok.github.io/actions
+      (`gh` kuruluysa: `gh run watch`). Yeşil tik → 1-2 dakika içinde sitede. Kırmızı → "Build ve test" işinin
+      loguna bak; test hatasıysa "playwright-report" artifact'ını indir.
 
 ## İçerik ekleme tarifleri
 
-Her tariften sonra: **Son adımlar** bölümünü uygula.
+### Görsel kuralları
 
-### Genel kurallar
-
-- **Eksik bilgi uydurma.** Tarih, araçlar, takım büyüklüğü, çeviri, link eksikse kullanıcıya sor.
-  Çeviriyi kullanıcı isterse sen yapabilirsin; istemezse o dili boş bırak (fallback çalışır, build raporunda görünür).
-- **Slug / id**: küçük harf, rakam ve tire (`lost-lantern`). Türkçe karakter yok. URL'de görünür, sonradan değiştirme.
-- **Görseller**: `.jpg` (fotoğraf/render) veya `.png` (şeffaflık/piksel art). Uzun kenar **en fazla 2560 px**.
-  Dosya **5 MB'tan büyükse** veya uzun kenarı 2560 px'i aşıyorsa eklemeden önce küçült (sharp Astro ile kurulu):
-  `node -e "require('sharp')('girdi.jpg').resize(2560,2560,{fit:'inside'}).jpeg({quality:85}).toFile('cover.jpg')"`
-  Build WebP'ye çevirir ve farklı boyutlar üretir; orijinal repo'da kalır.
-- **İsimlendirme**: kapak `cover.jpg`, galeri `01.jpg`, `02.jpg`… (sıra = dosyadaki listeleme sırası).
-- **Alt metin zorunlu** (en az bir dil): görselde ne olduğunu kısaca anlat.
-- **.glb modeller**: 20 MB'tan büyükse eklemeden önce sıkıştırmayı öner:
-  `npx @gltf-transform/cli optimize girdi.glb model.glb --compress draco --texture-compress webp`
-  (Draco ile sıkıştırılmış modeli model-viewer destekler). `.gltf` sadece tek dosyalıysa (gömülü veri) çalışır; `.glb` tercih et.
-- **Repo'ya konmaz**: video (YouTube'a), oynanabilir oyun build'i (itch.io'ya). Tek dosya 90 MB'ı geçemez.
+- `.jpg` (fotoğraf/render) veya `.png` (şeffaflık, piksel art). Uzun kenar **en fazla 2560 px**, dosya **en fazla 5 MB**.
+  Büyükse küçült (sharp Astro ile kurulu; çıktıyı hedef klasöre yaz):
+  `node -e "require('sharp')('girdi.png').resize(2560,2560,{fit:'inside',withoutEnlargement:true}).jpeg({quality:85}).toFile('cover.jpg')"`
+  Build görselleri WebP'ye çevirir ve birkaç boyut üretir; orijinal repo'da kalır (ve `dist/`'e de kopyalanır).
+  sharp "unable to open" / "No such file" derse yol 260 karakteri aşıyordur (Windows): kaynağı önce kısa bir
+  klasöre kopyala (ör. `C:\Users\ogzog\AppData\Local\Temp\x\`). Komut proje kökünden çalıştırılmalı (`require('sharp')`).
+- İsimler: kapak `cover.jpg`, galeri `01.jpg`, `02.jpg`… Türkçe karakter ve boşluk yok.
+- **Alt metin zorunlu** (en az bir dil): görselde ne olduğunu kısaca anlat ("Fırtınada deniz feneri, gece").
+- Oyun kapakları **16:9**; model/tasarım kapakları kareye kırpılarak gösterilir (önemli kısım ortada olsun).
 
 ### Yeni proje — lightbox modu (Modeller, Tasarımlar)
 
-1. `src/content/projects/_template-lightbox/` klasörünü `src/content/projects/<slug>/` olarak kopyala.
-2. Görselleri klasöre koy: `cover.jpg` (lightbox'ta ilk görsel ve kart kapağı), `01.jpg`, `02.jpg`…
-3. 3D model varsa `model.glb` olarak koy ve `index.md`'de `model:` bloğunu aç (tris, texture, renderer opsiyonel).
-4. `index.md`'yi doldur: `draft: false` yap. Zorunlu: `title`, `summary`, `category` (`models`/`designs`),
-   `status`, `date`, `cover.src` + `cover.alt`. Galeri her görsel için `{ src, alt }`.
-   `tools` → `src/data/tools.yaml`'daki id'ler (yoksa önce oraya ekle). `tags` serbest metin.
-   Sketchfab/ArtStation linki varsa `links` altına.
-5. `en.md` / `tr.md` **gerekmez** (lightbox modunda uzun metin yok).
+1. `src/content/projects/_template-lightbox/` → `src/content/projects/<slug>/` kopyala.
+   Slug: küçük harf, rakam, tire (`stone-tower`). URL'de görünür (`?item=stone-tower`), sonradan değiştirme.
+2. Görseller: `cover.jpg` (kart kapağı ve lightbox'ta ilk görsel), `01.jpg`, `02.jpg`…
+3. 3D model varsa `model.glb` olarak koy, `index.md`'de `model:` bloğunu aç (`tris`, `texture`, `renderer` opsiyonel).
+   `.gltf` sadece tek dosyalıysa (gömülü veri) çalışır; `.glb` tercih et. > 20 MB ise:
+   `npx @gltf-transform/cli optimize girdi.glb model.glb --compress draco --texture-compress webp`
+4. `index.md`: `draft: false`. Zorunlu: `title`, `summary`, `category` (`models`/`designs`), `status`, `date`,
+   `cover.src` + `cover.alt`. Galeri: her görsel `{ src, alt }`. `tools` → `src/data/tools.yaml` id'leri (yoksa önce
+   oraya ekle). `tags` serbest metin (büyük/küçük harf fark etmez). Sketchfab/ArtStation/website → `links`.
+5. `en.md` / `tr.md` **gerekmez**.
 
 ### Yeni proje — detail modu (Oyunlar)
 
-1. `src/content/projects/_template-detail/` klasörünü `src/content/projects/<slug>/` olarak kopyala.
-2. Görseller: `cover.jpg` (**16:9**, detay sayfasının büyük görseli ve kart kapağı), galeri `01.jpg`…
+1. `src/content/projects/_template-detail/` → `src/content/projects/<slug>/` kopyala.
+2. Görseller: `cover.jpg` (**16:9**; detay sayfasının büyük görseli ve kart kapağı), galeri `01.jpg`…
 3. `index.md`: `draft: false`, zorunlu alanlar yukarıdaki gibi, `category: games`.
    - `links`: `steam`, `itch`, `github`, `trailer` (YouTube linki veya id), `website`. Boşlar görünmez.
-     Sıra ve ilk dolu olanın birincil buton olması: itch → steam → fragman → github → website.
-     `trailer` doluysa hero görseli tıklayınca oynayan videoya dönüşür ve "Fragmanı izle" butonu çıkar.
+     İlk dolu olan birincil buton olur; sıra: itch → steam → fragman → github → website.
+     `trailer` doluysa büyük görsel tıklayınca oynayan videoya dönüşür, "Fragmanı izle" butonu çıkar.
    - `spec`: `genre`, `engine`, `platforms`, `team` (1 = solo), `duration`, `publisher`. Boşlar gizlenir.
-     Künyede ayrıca durum, yayın tarihi (`date`) ve araçlar (`tools`) otomatik gösterilir.
-   - `gallery`: metnin hemen altında "Galeri" başlığıyla gösterilir.
+     Künyede durum, yayın tarihi (`date`) ve araçlar (`tools`) otomatik gösterilir.
+   - `gallery`: metnin altında "Galeri" başlığıyla.
    - `blocks` (opsiyonel, yazıldığı sırayla galerinin altında):
      - `gallery` → `images: [{ src, alt }]`, opsiyonel `caption: {en, tr}`
      - `youtube` → `id` (video linki de olur), opsiyonel `title`
      - `model` → `src: ./model.glb`, opsiyonel `caption`
-     - `code` → `file: ./snippets/X.cs`, `lang` (Shiki dil adı: `csharp`, `cpp`, `gdscript`, `python`, `hlsl`, `glsl`, `json`…), opsiyonel `caption`
-     - `itch` → `url` (itch.io sayfasında "Embed game" → iframe'in `src` adresi), `width`, `height` (oyunun boyutu), opsiyonel `title`
-     - `download` → `file: ./dosya.pdf` (.pdf/.zip/.glb), opsiyonel `label`; ad, tür ve boyut otomatik
-   - Şablondaki örnek `youtube`/`itch` bloklarını gerçek değerlerle değiştir ya da sil.
+     - `code` → `file: ./snippets/X.cs`, `lang` (Shiki adı: `csharp`, `cpp`, `gdscript`, `python`, `hlsl`, `glsl`, `json`…), opsiyonel `caption`
+     - `itch` → `url` (itch.io sayfası → "Embed game" → iframe'in `src` adresi), `width`, `height`, opsiyonel `title`
+     - `download` → `file: ./dosya.pdf` (.pdf / .zip / .glb), opsiyonel `label`; ad, tür, boyut otomatik
+   - Şablondaki örnek `youtube` / `itch` bloklarını gerçek değerlerle değiştir ya da sil.
 4. `en.md` ve `tr.md`: üç `##` başlık, bu sırayla: **What it is / What I did / What I learned** ve
-   **Nedir / Ben ne yaptım / Ne öğrendim**. Markdown destekli. Takım projesinde "Ben ne yaptım"
-   kısmında kullanıcının katkısı net olmalı. Biri yoksa diğer dile düşülür (rapor uyarır).
-   Detail modundaki projede ikisinden en az biri **zorunlu** (yoksa build durur).
+   **Nedir / Ben ne yaptım / Ne öğrendim** (otomatik 01-02-03 numaralanır). Markdown destekli.
+   En az biri **zorunlu** (yoksa build durur); diğeri yoksa o dile düşülür ve sayfada not çıkar.
+
+### Projeyi düzenleme / silme
+
+- Düzenleme: `src/content/projects/<slug>/index.md` (ve `en.md`/`tr.md`). Slug'ı değiştirme (paylaşılmış linkler kırılır).
+- Geçici gizleme: `draft: true`. Silme: klasörü sil. Silinen proje `featured` idiyse başka birini öne çıkar.
+- Sıra: `order` (küçük önce; olmayanlar sona), eşitse tarih (yeni → eski).
 
 ### Öne çıkan proje
 
-`featured: true` → sekmelerin üstündeki büyük kart. Tek bir projede tutmak önerilir; diğerininkini `false` yap.
+`featured: true` → sekmelerin üstündeki büyük kart ve varsayılan paylaşım görseli. Tek projede tut; diğerlerinde `false`.
+
+### Örnek içeriği temizleme
+
+Kullanıcı kendi içeriğini ekledikçe (onayını alarak):
+- Örnek proje klasörleri: `lantern-keeper`, `tiny-dungeon`, `lowpoly-crate`, `poster-series` (`_template-*` kalır).
+- `src/content/certificates/sample-certificate.yaml`.
+- `src/data/downloads/*.pdf` örnekleri → gerçekleri gelince değiştir (tarif aşağıda).
+- `src/data/tools.yaml`'daki artık kullanılmayan araçlar (ör. `substance-painter`, `figma`, `aseprite`, `git`):
+  hiçbir proje ve `about.yaml` kullanmıyorsa silinebilir; kullanan varsa build hata verir.
+- Hiç proje kalmazsa site yine çalışır ama projeler bölümü boş görünür; en az bir gerçek proje eklenmeden tümünü silme.
+- Testler içerikten bağımsızdır; uygun içerik yoksa ilgili test atlanır (3D modelli proje yoksa 3D testi gibi).
 
 ### Yeni kategori (sekme)
 
-`src/data/categories.yaml`'a kayıt ekle: `id` (URL'de: `/en/projects/<id>/`), `name: {en, tr}`, `order`,
-`visible`, `mode: detail | lightbox`. Kod değişikliği gerekmez. Gizlemek için `visible: false`
-(o kategorinin projeleri de listeden çıkar).
+`src/data/categories.yaml`'a kayıt: `id` (URL'de: `/en/projects/<id>/`), `name: {en, tr}`, `order`, `visible`,
+`mode: detail | lightbox`. Kod değişikliği gerekmez. Projesi olmayan kategorinin sekmesi görünmez.
+Gizlemek için `visible: false` (projeleri de listeden çıkar).
 
 ### Yeni araç
 
@@ -207,41 +146,154 @@ Her tariften sonra: **Son adımlar** bölümünü uygula.
 
 ### Sertifika
 
-1. `src/content/certificates/<slug>.yaml` oluştur (`sample-certificate.yaml`'ı örnek al).
+1. `src/content/certificates/<slug>.yaml` oluştur (`_`-siz, `sample-certificate.yaml`'ı örnek al).
 2. Zorunlu: `title: {en, tr}`, `issuer`, `date`. Opsiyonel: `instructor`, `hours`, `credentialId`, `verifyUrl`,
-   `logo` (ör. `./logos/kurum.png`, kare, en az 128 px; yoksa baş harfler), `order`.
+   `logo` (`./logos/kurum.png`, kare, en az 128 px; yoksa kurumun baş harfleri), `order`.
 
 ### İstatistik
 
-`src/data/stats.yaml` (3-4 kayıt önerilir, ekrandaki sıra dosyadaki sıradır). `kind`:
+`src/data/stats.yaml` (3-4 kayıt; ekrandaki sıra = dosyadaki sıra). `kind`:
 - `manual` → `value: 12` elle yazılır.
 - `count` → proje sayısı; `status: released` ve/veya `category: models` ile süzülür.
   Etiket "yayınlanan oyun" diyorsa `category: games` de ekle; yoksa yayınlanan modeller de sayılır.
-- `yearsSince` → `year: 2022`'den bu yana geçen yıl (build tarihine göre hesaplanır).
+- `yearsSince` → `year`dan bu yana geçen yıl (**build** tarihine göre; yeni yıl gelince bir push gerekir).
 Her birinde `label: {en, tr}`, opsiyonel `suffix` (ör. `+`).
 
 ### Sosyal link / e-posta
 
-`src/data/site.yaml` → `socials` altındaki alanı doldur (tam URL). Boş bırakılan görünmez.
-Desteklenenler: itch, steam, github, youtube, linkedin, behance, artstation, sketchfab, discord.
-E-posta: `email`.
+`src/data/site.yaml` → `socials` (tam URL; boşsa görünmez): itch, steam, github, youtube, linkedin, behance,
+artstation, sketchfab, discord. Ekrandaki sıra `src/lib/profile.ts` → `SOCIAL_LABELS`. E-posta: `email`.
 
-### CV / portfolyo PDF'i güncelleme
+### CV / portfolyo PDF'i
 
-1. PDF'i `src/data/downloads/` altına koy (isim: `cv-en.pdf`, `cv-tr.pdf`, `portfolio-tr.pdf`…). Eskisinin üzerine yazılabilir.
-2. `src/data/downloads.yaml`'da ilgili kaydın `files.<dil>` satırını güncelle: `file`, `pages` (sayfa sayısı), `updated` (bugünün tarihi).
-   Sadece bir dil varsa diğer dilin satırını sil.
+1. PDF'i `src/data/downloads/` altına koy (`cv-en.pdf`, `cv-tr.pdf`, `portfolio-tr.pdf`…). Eskisinin üzerine yazılabilir.
+2. `src/data/downloads.yaml`: ilgili kaydın `files.<dil>` satırı → `file`, `pages` (sayfa sayısı; kullanıcıya sor
+   veya PDF'ten oku), `updated` (bugünün tarihi). Sadece bir dil varsa diğer dilin satırını sil. Sıra = dosyadaki sıra.
 
-### Hakkımda metni
+### Hakkımda, hero, iletişim metinleri
 
-`src/data/about.yaml`: `bio: {en, tr}` (paragraflar arasında boş satır), `school`, `city`, `since`,
-`toolbox` (gruplar ve `tools.yaml` id'leri; temel seviye için `level: basic`).
-Fotoğraf: `src/data/about/photo.jpg` (dikey, en az 900×1200).
+- `src/data/about.yaml`: `bio: {en, tr}` (paragraflar arası boş satır), `school`, `city`, `since`,
+  `toolbox` (gruplar + `tools.yaml` id'leri; temel seviye için `level: basic`).
+  Fotoğraf: `src/data/about/photo.jpg` (dikey, en az 900×1200) + `photo.alt`.
+- `src/data/site.yaml`: `name`, `eyebrow` (hero üst başlığı), `intro` (hero tanıtımı), `description`
+  (arama motoru açıklaması), `contactText` (iletişim davet metni).
+- Arayüz metinleri (buton, başlık, etiket): `src/i18n/en.json` ve `tr.json` — iki dosyada aynı anahtar olmalı.
 
-### Son adımlar (her içerik değişikliğinden sonra)
+### Görünüm (sık istekler)
 
-1. `npm run build` — şema hatası varsa düzelt; çeviri raporundaki yeni eksikleri kullanıcıya söyle.
-2. `npm test` ve `npm run check:sizes` — başarısız olursa push etme, sebebini düzelt ya da kullanıcıya söyle.
-3. Commit + push (main'e doğrudan; CI testleri geçmezse yayın yapılmaz). Conventional commits, Türkçe açıklama:
-   `feat(icerik): Modeller'e "Low-poly Sandık" eklendi`, `fix(icerik): CV güncellendi`.
-   Kod değişiklikleri ise `feature/…` veya `fix/…` branch'inde yapılıp PR ile birleştirilir.
+- Vurgu rengi: `src/styles/global.css` → `--accent` (tek satır; diğer tonlar ondan türetilir). Değiştirince
+  kontrastı kontrol et (Lighthouse veya beyaz yazı / koyu zemin oranı ≥ 4.5).
+- Bölüm sırası / yeni ana sayfa bölümü: `src/lib/sections.ts` + `src/pages/[lang]/index.astro` (kod değişikliği → branch + PR).
+
+---
+
+## Komutlar
+
+| Komut | Ne yapar |
+|---|---|
+| `npm run dev` | Geliştirme sunucusu: http://localhost:4321 (kayıtta otomatik yenilenir) |
+| `npm run check` | TypeScript + Astro tip kontrolü |
+| `npm run build` | `dist/`'e derler; içerik şemaya uymuyorsa durur, eksik çeviri/bölüm uyarılarını listeler |
+| `npm run preview` | `dist/`'i yerelde yayınlar (GitHub Pages'teki hâlin aynısı) |
+| `npm test` | Playwright testleri (`dist/`'i 4322 portunda açar). **Önce `npm run build`** |
+| `npm run check:sizes` | Boyut kontrolü: dosya >20 MB uyarı, >90 MB hata; görsel >5 MB uyarı; site >1 GB hata |
+| `npm run samples` | Örnek yer tutucu görsel/glb/pdf üretir (sadece eksikleri; normalde gerekmez) |
+
+Ortam: Windows, Node 24 (`C:\Program Files\nodejs`). Bash'te `node` bulunamazsa
+`export PATH="/c/Program Files/nodejs:$PATH"`. GitHub CLI (`gh`) kurulu değil.
+
+Test notları:
+- Açık bir `npm run preview` varsa testten önce kapat (`npx astro preview stop`); Astro 7 iki preview'a izin vermez.
+  `npm run dev` (4321) testlerle çakışmaz.
+- Testler içerikten bağımsız: sayıları sayfadan okur, uygun içerik yoksa ilgili test **atlanır**, kırılmaz.
+- Lightbox testlerinde ok/ESC'den önce `waitForLightbox()`: PhotoSwipe açılış animasyonunda tuşları yok sayar
+  (script bitince `.pswp[data-ready]` ekler). Panoya kopyalama testinde `context.grantPermissions` gerekir.
+- Base yolu testi (Git Bash yol dönüşümünü kapatarak):
+  `MSYS_NO_PATHCONV=1 BASE_PATH=/portfolio npm run build && MSYS_NO_PATHCONV=1 BASE_PATH=/portfolio npm test`
+  Sonra normal build'i tekrar al.
+- Lighthouse (isteğe bağlı): kendi Chrome başlatıcısı bu makinede `spawn UNKNOWN` veriyor. Playwright'ın Chromium'unu
+  `--remote-debugging-port=9222` ile açık tut, `npx lighthouse@13.5.0 <url> --port=9222` ile bağlan.
+  Son ölçüm (Faz 5, mobil): tüm sayfalar performans 98, erişilebilirlik / en iyi uygulamalar / SEO 100.
+- `npm run preview` sayfaları tarayıcı önbelleğinden verebilir: değişiklik görünmüyorsa `?v=2` ekle veya Ctrl+F5.
+
+CI (`.github/workflows/deploy.yml`; main'e push veya Actions → Deploy → Run workflow):
+npm ci → check → build → check:sizes → Playwright (Chromium) → aynı `dist/` Pages'e yüklenir → deploy.
+Biri başarısızsa yayın olmaz. Base yolu `actions/configure-pages`'ten gelir (bu repo için boş = kök dizin).
+Test başarısızsa rapor "playwright-report" artifact'ında (7 gün). Kurulum adımları: README.md.
+
+---
+
+## Mimari
+
+- `src/content.config.ts` — **tüm zod şemaları**. Alan eklemek/değiştirmek buradan başlar.
+- `src/content/projects/<slug>/` — her proje kendi klasöründe: `index.md` (frontmatter: ortak alanlar + kısa
+  `{en, tr}` metinler), `en.md`/`tr.md` (detail modu uzun metin), görseller, `.glb`, `snippets/`, indirilebilir dosyalar.
+- `src/content/certificates/<slug>.yaml` — sertifikalar.
+- `src/data/*.yaml` — site geneli veriler (site, kategoriler, araçlar, istatistikler, hakkımda, indirmeler).
+  Tekil dosyalar (`site.yaml`, `about.yaml`) alanları en üst seviyede tutar (Git-based CMS uyumu).
+- `src/i18n/{en,tr}.json` — arayüz metinleri (eksik anahtar → `npm run check` hatası).
+- `src/lib/` — içerik okuma ve dönüştürme. Sayfalar/bileşenler içeriğe **sadece** buradan erişir:
+  `i18n.ts` (t(), localize(), plural(), tarih/sayı biçimi), `urls.ts` (base uyumlu linkler), `projects.ts` (sıralama,
+  doğrulama, komşular), `content.ts` (tekil veriler, dosya sırası), `assets.ts` (glb/pdf URL ve boyut, kod dosyası),
+  `explorer.ts` (proje gezgini verisi), `lightbox.ts` (lightbox görselleri), `stats.ts`, `profile.ts` (sertifika,
+  indirme, sosyal), `seo.ts` (paylaşım görseli, JSON-LD), `sections.ts` (ana sayfa bölüm sırası),
+  `translation-report.ts` (build uyarı raporu).
+- `src/components/` — küçük, tek sorumluluklu bileşenler; sabit metin yok (metin i18n/json veya data'dan):
+  `layout/` (Head, Header, Footer), `ui/` (tema/dil düğmesi, LocalizedText, SectionHeading, CopyButton),
+  `projects/` (gezgin, kart, sekmeler, filtre, öne çıkan), `detail/` (detay sayfası parçaları),
+  `media/` (medya blokları; `MediaBlocks.astro` dağıtıcı), `sections/` (ana sayfa bölümleri).
+- `src/scripts/` — tarayıcıda çalışan vanilla TypeScript: `theme.ts`, `lang.ts`, `projects/` (durum, sekmeler,
+  filtreler), `lightbox/` (PhotoSwipe + 3D katmanı; ilk tıklamada yüklenir), `gallery.ts`, `embeds.ts`,
+  `model-viewer.ts` (ortak 3D yükleyici), `copy.ts`, `counters.ts`, `dom.ts`.
+- `src/pages/` — `index.astro` (kök dil yönlendirmesi), `404.astro`, `robots.txt.ts`, `[lang]/index.astro`,
+  `[lang]/projects/index.astro`, `[lang]/projects/[category]/index.astro`, `[lang]/projects/[category]/[slug].astro`.
+- `scripts/` — `check-sizes.mjs` (CI boyut kontrolü), `make-samples.mjs` (örnek dosya üretici).
+- `tests/` — Playwright (`helpers.ts` + `*.spec.ts`).
+
+### Davranış özeti
+
+- **Dil:** varsayılan İngilizce; `/en/…` ve `/tr/…`. Kök `/` kayıtlı tercihe (localStorage `lang`) göre yönlendirir.
+  EN/TR düğmesi aynı sayfanın diğer dildeki adresine gider (`#bölüm` ve `?item=` korunur). Her sayfa iki dilde üretilir;
+  boş dil diğerine düşer ve metne doğru `lang` verilir.
+- **Tema:** varsayılan koyu; tercih localStorage `theme`. İlk boyamadan önce `<head>`'deki inline script uygular.
+- **Projeler:** her proje sayfası tüm kartları içerir, aktif sekmede olmayanlar `hidden`. JS kapalıyken sekmeler link;
+  JS ile ARIA tablist, sayfa yenilemeden süzer, `/projects/` sayfalarında adres çubuğunu günceller (ana sayfada değil).
+  Filtre: grup başına tek seçim, sekme değişince sıfırlanır.
+- **Lightbox:** görünen lightbox kartlarının tüm görselleri tek listede; ok tuşları projeler arasında geçer.
+  `?item=<slug>` doğrudan açar. 3D açıkken ok/ESC modele ait, ESC önce 3D'yi kapatır. JS kapalıysa kart büyük görsele link.
+- **Detay sayfası:** başlık → aksiyon butonları → hero/fragman → metin (01-02-03) → galeri → bloklar → önceki/sonraki;
+  yanda künye. YouTube / itch.io / 3D tıklanana kadar dış istek yapmaz.
+- **Ana sayfa:** Hero + sayaçlar, sonra `sections.ts` sırasıyla Projeler, Hakkımda, Sertifikalar, İndirmeler, İletişim.
+- **404:** iki dilli, header'sız, `noindex`.
+- **SEO:** title/description, canonical, hreflang (en, tr, x-default), Open Graph (proje kapağı; diğer sayfalarda öne çıkan
+  projenin kapağı), ana sayfada `Person` JSON-LD, `robots.txt`, iki dilli sitemap.
+- **Paket boyutları:** sekme/filtre ~6 KB her sayfada; PhotoSwipe ~65 KB ilk tıklamada; model-viewer ~1 MB
+  sadece 3D istenince.
+
+### Kod kuralları
+
+- İç linkler asla elle `"/..."` yazılmaz: `pagePath()`, `sectionPath()`, `withBase()` (base değişebilir).
+- Görsel yön "Art Book": Fraunces başlık, Instrument Sans metin, JetBrains Mono etiket; sıcak siyah/krem, kobalt vurgu.
+  Oyunlar geniş 16:9 kartlarla öne çıkar; modeller/tasarımlar kare galeri. Vurgu rengi tek değişken: `--accent`.
+- Sayfa geçişleri tarayıcının View Transition API'si (`@view-transition`). Astro `ClientRouter` **kullanılmıyor**:
+  script'ler sayfa yüklemesinde bir kez çalışır.
+- Kolon şablonu olmayan `.grid` varsayılan `minmax(0,1fr)` (global.css). Çok kolonlularda da `minmax(0,Nfr)`;
+  düz `1fr` uzun kelime/kod satırında mobilde sayfayı yatay taşırır (testi var).
+- Yatay şeritte öğe göstermek için `scrollIntoView()` **kullanma** (sayfayı dikey kaydırır): `dom.ts` → `revealHorizontally()`.
+- Bölümler arası boşluk `margin` ile (padding değil): `#bölüm` linki başlığın hemen üstüne kayar.
+- Erişilebilirlik: alt metin zorunlu (şemada), düğme adı görünen metni içerir (WCAG 2.5.3), dokunma hedefi ≥ 24 px,
+  kontrast ≥ 4.5:1 (kod teması `github-dark-default` / `github-light-default`), `prefers-reduced-motion`'a uy.
+- Astro 7: Markdown işlemcisi Sätteri (remark/rehype eklentisi için `@astrojs/markdown-remark` + `markdown.processor`).
+  `compressHTML: 'jsx'`: satır içi öğeler arasında boşluk için `{' '}`. Kapanmamış HTML etiketi build hatasıdır.
+  `src/fetch.ts` ayrılmış dosya adıdır. Belgeler: https://docs.astro.build
+- Yeni kütüphane eklemeden önce kullanıcıya nedenini söyle.
+- Bir bileşene/listeye dokunduysan onu kapsayan Playwright testini güncelle veya ekle.
+
+### Bilinen sınırlamalar / teknik borç
+
+- Lightbox projeleri için ayrı sayfa yok: `?item=` linki paylaşılınca önizleme görseli kategori sayfasınınki olur.
+- `yearsSince` sayacı build anında hesaplanır; yıl dönünce güncellenmesi için bir push (veya elle workflow) gerekir.
+- Orijinal görseller `dist/`'e de kopyalanır (Astro davranışı); site boyutunu `check:sizes` izler.
+- Testler sadece Chromium'da; Firefox/Safari otomatik test edilmiyor.
+- Sosyal linkler ikonsuz (marka ikonu paketi eklenmedi). YouTube bloğunda oynatmadan önce kapak yok (dış istek olmasın diye).
+- E-posta düz metin: spam botları toplayabilir.
