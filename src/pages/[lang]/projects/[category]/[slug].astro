@@ -47,7 +47,7 @@ const cover = { src: data.cover.src, alt: l(data.cover.alt, locale) };
 
     <header class="mt-8">
       <div class="flex flex-wrap items-center gap-2">
-        <StatusBadge status={data.status} locale={locale} class="border border-line" />
+        <StatusBadge status={data.status} locale={locale} />
         <span class="eyebrow ml-1">{l(category.data.name, locale)}</span>
         {data.tags.map((tag) => <span class="chip">{tag}</span>)}
       </div>
@@ -65,7 +65,7 @@ const cover = { src: data.cover.src, alt: l(data.cover.alt, locale) };
       <div class="lg:order-first">
         {
           text?.isFallback && (
-            <p class="mb-8 rounded-sm border border-line bg-surface px-4 py-3 text-sm text-muted" role="note">
+            <p class="px-frame mb-8 bg-surface px-4 py-3 text-sm text-muted" role="note">
               {t('detail.fallback')}
             </p>
           )

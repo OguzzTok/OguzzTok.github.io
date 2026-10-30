@@ -23,7 +23,7 @@ const videoId = youtubeId(video);
 
 <div
   id={id}
-  class="group relative aspect-video overflow-hidden rounded-sm bg-surface-2"
+  class="px-frame group relative aspect-video overflow-hidden bg-surface-2"
   data-embed
   data-embed-src={`https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0`}
   data-embed-title={title}
@@ -49,12 +49,12 @@ const videoId = youtubeId(video);
     class="absolute inset-0 flex flex-col items-center justify-center gap-3 text-center"
     data-embed-trigger
   >
-    <span class="grid size-20 place-items-center rounded-full bg-accent text-accent-on shadow-card transition-transform group-hover:scale-105">
+    <span class="px-frame-drop grid size-20 place-items-center bg-accent text-accent-on [--frame-color:var(--drop)] group-hover:-translate-x-[3px] group-hover:-translate-y-[3px]">
       <svg viewBox="0 0 24 24" class="ml-1 size-8" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg>
     </span>
-    <span class="rounded-sm bg-bg/80 px-3 py-1 text-sm font-semibold">{t('media.play')}<span class="sr-only">: {title}</span></span>
+    <span class="bg-bg/85 px-3 py-1 font-display text-base font-semibold">{t('media.play')}<span class="sr-only">: {title}</span></span>
   </a>
-  <p class="pointer-events-none absolute right-3 bottom-3 rounded-sm bg-bg/80 px-2 py-1 text-xs text-muted">
+  <p class="pointer-events-none absolute right-3 bottom-3 bg-bg/85 px-2 py-1 text-xs text-muted">
     {t('media.youtubeNote')}
   </p>
 </div>

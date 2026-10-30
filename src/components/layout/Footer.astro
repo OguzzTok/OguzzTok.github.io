@@ -12,9 +12,9 @@ const site = await getSite();
 const year = new Date().getFullYear();
 ---
 
-<footer class="mt-24 border-t border-line">
+<footer class="px-ground mt-24">
   <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-4 py-8 text-sm text-muted sm:px-6">
-    <p>© {year} {site.name} · {t('footer.built')}</p>
-    <a href="#main" class="hover:text-fg">{t('footer.top')} ↑</a>
+    <p class="font-display">© {year} {site.name} · {t('footer.built')}</p>
+    <a href="#main" class="font-display hover:text-fg">{t('footer.top')} ↑</a>
   </div>
 </footer>

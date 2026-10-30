@@ -17,7 +17,7 @@ const downloads = await getDownloads(locale);
 <div class="grid grid-cols-[minmax(0,1fr)] gap-6 md:grid-cols-2">
   {
     downloads.map((doc) => (
-      <article class="flex flex-col rounded-sm border border-line bg-surface p-6" data-download={doc.id}>
+      <article class="px-frame-drop flex flex-col bg-surface p-6" data-download={doc.id}>
         <h3 class="text-3xl font-medium">
           <LocalizedText value={doc.title} locale={locale} />
         </h3>

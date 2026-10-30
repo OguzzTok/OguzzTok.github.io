@@ -33,7 +33,7 @@ const items = [
             src={project.data.cover.src}
             alt=""
             width={160}
-            class="aspect-video w-28 shrink-0 rounded-sm object-cover opacity-80 transition-opacity group-hover:opacity-100"
+            class="px-frame aspect-video w-28 shrink-0 object-cover group-hover:[--frame-color:var(--accent-text)]"
           />
           <span>
             <span class="eyebrow block">{dir === 'prev' ? `← ${label}` : `${label} →`}</span>

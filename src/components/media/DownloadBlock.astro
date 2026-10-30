@@ -17,9 +17,9 @@ const extension = file.name.split('.').pop()?.toUpperCase();
 <a
   href={file.url}
   download={file.name}
-  class="group my-12 flex items-center gap-4 rounded-sm border border-line bg-surface p-4 transition-colors hover:border-fg"
+  class="px-frame-drop group my-12 flex items-center gap-4 bg-surface p-4 hover:[--frame-color:var(--accent-text)]"
 >
-  <span class="grid size-12 shrink-0 place-items-center rounded-sm bg-surface-2 font-mono text-xs text-accent-text">{extension}</span>
+  <span class="grid size-12 shrink-0 place-items-center bg-surface-2 font-display text-sm text-accent-text">{extension}</span>
   <span class="min-w-0 flex-1">
     <span class="block font-semibold">{label ?? file.name}</span>
     <span class="block truncate font-mono text-xs text-muted">{file.name} · {formatBytes(file.bytes)}</span>

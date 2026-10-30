@@ -1,7 +1,7 @@
 ---
 import { getImage } from 'astro:assets';
 // Hero'daki isim ve gövde metni ilk ekranda görünür: bu iki fontu önceden yükle (diğer alt kümeler gerektiğinde iner).
-import displayFont from '@fontsource-variable/fraunces/files/fraunces-latin-wght-normal.woff2?url';
+import displayFont from '@fontsource-variable/pixelify-sans/files/pixelify-sans-latin-wght-normal.woff2?url';
 import bodyFont from '@fontsource-variable/instrument-sans/files/instrument-sans-latin-wght-normal.woff2?url';
 import { getSite } from '../../lib/content';
 import { l, LOCALES, DEFAULT_LOCALE, otherLocale, type Locale } from '../../lib/i18n';
@@ -48,7 +48,7 @@ const ogLocale = (l: Locale) => (l === 'tr' ? 'tr_TR' : 'en_US');
 <link rel="preload" href={bodyFont} as="font" type="font/woff2" crossorigin />
 <link rel="sitemap" href={withBase('sitemap-index.xml')} />
 <link rel="icon" type="image/svg+xml" href={withBase('favicon.svg')} />
-<meta name="theme-color" content="#131211" />
+<meta name="theme-color" content="#120e22" />
 
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content={site.name} />

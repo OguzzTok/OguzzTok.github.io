@@ -21,7 +21,7 @@ const href = alternatePath(Astro.url.pathname, target);
   hreflang={target}
   data-lang-switch={target}
   title={t('lang.switch.label')}
-  class="flex h-10 items-center gap-1 rounded-sm px-2.5 font-mono text-xs tracking-wider transition-colors hover:bg-surface-2"
+  class="flex h-10 items-center gap-1 px-2.5 font-display text-sm hover:bg-surface-2"
 >
   {
     LOCALES.map((code, i) => (

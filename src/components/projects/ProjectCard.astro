@@ -41,7 +41,7 @@ const meta = [l(category.data.name, locale), firstTool, data.date.getUTCFullYear
   data-tools={data.tools.map((t) => t.id).join(' ')}
   hidden={hidden}
 >
-  <div class:list={['relative overflow-hidden rounded-sm bg-surface-2', isDetail ? 'aspect-video' : 'aspect-square']}>
+  <div class:list={['px-frame-drop relative overflow-hidden bg-surface-2 transition-transform duration-100 group-hover:-translate-x-[3px] group-hover:-translate-y-[3px]', isDetail ? 'aspect-video' : 'aspect-square']}>
     <Image
       src={data.cover.src}
       alt={l(data.cover.alt, locale)}
@@ -49,7 +49,7 @@ const meta = [l(category.data.name, locale), firstTool, data.date.getUTCFullYear
       sizes={isDetail
         ? '(min-width: 1024px) 760px, 100vw'
         : '(min-width: 1024px) 370px, (min-width: 768px) 50vw, 100vw'}
-      class="size-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+      class="size-full object-cover"
       loading="lazy"
     />
     <StatusBadge status={data.status} locale={locale} class="absolute top-3 left-3" />

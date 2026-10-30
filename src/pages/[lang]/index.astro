@@ -1,5 +1,5 @@
 ---
-/** Ana sayfa: hero + sayaçlar, ardından numaralı bölümler (sıra: src/lib/sections.ts). */
+/** Ana sayfa: hero + sayaçlar, ardından bölümler (sıra: src/lib/sections.ts). */
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProjectsExplorer from '../../components/projects/ProjectsExplorer.astro';
 import About from '../../components/sections/About.astro';
@@ -9,7 +9,7 @@ import Downloads from '../../components/sections/Downloads.astro';
 import Hero from '../../components/sections/Hero.astro';
 import SectionHeading from '../../components/ui/SectionHeading.astro';
 import { LOCALES, useTranslations, type Locale } from '../../lib/i18n';
-import { SECTIONS, sectionNumber, type SectionId } from '../../lib/sections';
+import { SECTIONS, type SectionId } from '../../lib/sections';
 import { personJsonLd } from '../../lib/seo';
 import { printTranslationReport } from '../../lib/translation-report';
 
@@ -40,7 +40,7 @@ const components: Record<SectionId, (props: { locale: Locale }) => unknown> = {
       return (
         // Boşluk margin ile: #bölüm linki başlığın hemen üstüne kaydırır (header payı: html scroll-padding-top)
         <section class="mx-auto mt-24 max-w-6xl px-4 sm:px-6 md:mt-32" aria-labelledby={`${section.id}-title`} id={section.id}>
-          <SectionHeading number={sectionNumber(section.id)} title={t(section.title)} id={`${section.id}-title`} />
+          <SectionHeading title={t(section.title)} id={`${section.id}-title`} />
           <Section locale={locale} />
         </section>
       );

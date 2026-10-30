@@ -184,7 +184,8 @@ artstation, sketchfab, discord. Ekrandaki sıra `src/lib/profile.ts` → `SOCIAL
 
 ### Görünüm (sık istekler)
 
-- Vurgu rengi: `src/styles/global.css` → `--accent` (tek satır; diğer tonlar ondan türetilir). Değiştirince
+- Vurgu rengi: `src/styles/global.css` → `--accent` (lamba sarısı, buton dolgusu). Link/vurgu yazısı her temada ayrı:
+  `--accent-text` (gece `--accent`, gündüz mor `#6c3bb0`). Değiştirince
   kontrastı kontrol et (Lighthouse veya beyaz yazı / koyu zemin oranı ≥ 4.5).
 - Bölüm sırası / yeni ana sayfa bölümü: `src/lib/sections.ts` + `src/pages/[lang]/index.astro` (kod değişikliği → branch + PR).
 
@@ -216,7 +217,8 @@ Test notları:
   Sonra normal build'i tekrar al.
 - Lighthouse (isteğe bağlı): kendi Chrome başlatıcısı bu makinede `spawn UNKNOWN` veriyor. Playwright'ın Chromium'unu
   `--remote-debugging-port=9222` ile açık tut, `npx lighthouse@13.5.0 <url> --port=9222` ile bağlan.
-  Son ölçüm (Faz 5, mobil): tüm sayfalar performans 98, erişilebilirlik / en iyi uygulamalar / SEO 100.
+  Son ölçüm (pixel tasarım, 2026-10-30, mobil, gece teması): ana sayfa ve detay sayfası 100 / 100 / 100 / 100.
+  Gündüz teması Lighthouse ile ölçülmedi; renk çiftleri elle hesaplandı (en düşük 5.37:1).
 - `npm run preview` sayfaları tarayıcı önbelleğinden verebilir: değişiklik görünmüyorsa `?v=2` ekle veya Ctrl+F5.
 
 CI (`.github/workflows/deploy.yml`; main'e push veya Actions → Deploy → Run workflow):
@@ -247,7 +249,7 @@ Test başarısızsa rapor "playwright-report" artifact'ında (7 gün). Kurulum a
   `media/` (medya blokları; `MediaBlocks.astro` dağıtıcı), `sections/` (ana sayfa bölümleri).
 - `src/scripts/` — tarayıcıda çalışan vanilla TypeScript: `theme.ts`, `lang.ts`, `projects/` (durum, sekmeler,
   filtreler), `lightbox/` (PhotoSwipe + 3D katmanı; ilk tıklamada yüklenir), `gallery.ts`, `embeds.ts`,
-  `model-viewer.ts` (ortak 3D yükleyici), `copy.ts`, `counters.ts`, `dom.ts`.
+  `model-viewer.ts` (ortak 3D yükleyici), `hero-scene.ts` (ana sayfa pixel sahnesi), `copy.ts`, `counters.ts`, `dom.ts`.
 - `src/pages/` — `index.astro` (kök dil yönlendirmesi), `404.astro`, `robots.txt.ts`, `[lang]/index.astro`,
   `[lang]/projects/index.astro`, `[lang]/projects/[category]/index.astro`, `[lang]/projects/[category]/[slug].astro`.
 - `scripts/` — `check-sizes.mjs` (CI boyut kontrolü), `make-samples.mjs` (örnek dosya üretici).
@@ -258,7 +260,8 @@ Test başarısızsa rapor "playwright-report" artifact'ında (7 gün). Kurulum a
 - **Dil:** varsayılan İngilizce; `/en/…` ve `/tr/…`. Kök `/` kayıtlı tercihe (localStorage `lang`) göre yönlendirir.
   EN/TR düğmesi aynı sayfanın diğer dildeki adresine gider (`#bölüm` ve `?item=` korunur). Her sayfa iki dilde üretilir;
   boş dil diğerine düşer ve metne doğru `lang` verilir.
-- **Tema:** varsayılan koyu; tercih localStorage `theme`. İlk boyamadan önce `<head>`'deki inline script uygular.
+- **Tema:** gece (koyu, varsayılan) / gündüz (açık); tercih localStorage `theme`. İlk boyamadan önce `<head>`'deki
+  inline script uygular. Hero sahnesi `html[data-theme]`'i izler ve gece/gündüz çizer.
 - **Projeler:** her proje sayfası tüm kartları içerir, aktif sekmede olmayanlar `hidden`. JS kapalıyken sekmeler link;
   JS ile ARIA tablist, sayfa yenilemeden süzer, `/projects/` sayfalarında adres çubuğunu günceller (ana sayfada değil).
   Filtre: grup başına tek seçim, sekme değişince sıfırlanır.
@@ -266,18 +269,23 @@ Test başarısızsa rapor "playwright-report" artifact'ında (7 gün). Kurulum a
   `?item=<slug>` doğrudan açar. 3D açıkken ok/ESC modele ait, ESC önce 3D'yi kapatır. JS kapalıysa kart büyük görsele link.
 - **Detay sayfası:** başlık → aksiyon butonları → hero/fragman → metin (01-02-03) → galeri → bloklar → önceki/sonraki;
   yanda künye. YouTube / itch.io / 3D tıklanana kadar dış istek yapmaz.
-- **Ana sayfa:** Hero + sayaçlar, sonra `sections.ts` sırasıyla Projeler, Hakkımda, Sertifikalar, İndirmeler, İletişim.
+- **Ana sayfa:** Hero (pixel sahne: yıldızlar/güneş, tepeler, sokak lambası, imlece bakan ve tıklayınca zıplayan
+  karakter; canvas, `aria-hidden`; hareketi azalt tercihinde animasyonsuz; ekranda değilken durur) + sayaçlar (sahnenin
+  zemininde), sonra `sections.ts` sırasıyla Projeler, Hakkımda, Sertifikalar, İndirmeler, İletişim.
 - **404:** iki dilli, header'sız, `noindex`.
 - **SEO:** title/description, canonical, hreflang (en, tr, x-default), Open Graph (proje kapağı; diğer sayfalarda öne çıkan
   projenin kapağı), ana sayfada `Person` JSON-LD, `robots.txt`, iki dilli sitemap.
-- **Paket boyutları:** sekme/filtre ~6 KB her sayfada; PhotoSwipe ~65 KB ilk tıklamada; model-viewer ~1 MB
+- **Paket boyutları:** sekme/filtre ~6 KB her sayfada; hero sahnesi ~4 KB sadece ana sayfada; PhotoSwipe ~65 KB ilk tıklamada; model-viewer ~1 MB
   sadece 3D istenince.
 
 ### Kod kuralları
 
 - İç linkler asla elle `"/..."` yazılmaz: `pagePath()`, `sectionPath()`, `withBase()` (base değişebilir).
-- Görsel yön "Art Book": Fraunces başlık, Instrument Sans metin, JetBrains Mono etiket; sıcak siyah/krem, kobalt vurgu.
-  Oyunlar geniş 16:9 kartlarla öne çıkar; modeller/tasarımlar kare galeri. Vurgu rengi tek değişken: `--accent`.
+- Görsel yön "Pixel" (2026-10-30, kullanıcının seçimi): Mental Impass ile aynı gece dünyası. Başlık/menü/etiket
+  Pixelify Sans (Türkçe karakter destekli), uzun metin Instrument Sans (okunabilirlik), kod JetBrains Mono.
+  Köşe yok (`--radius-sm: 0`); kutular `px-frame` / `px-frame-drop` utility'leriyle çentikli pixel çerçeve + sert gölge
+  (`--frame-color` ile renk). Blur, gradient gölge, yuvarlak köşe kullanma. Metinler sade kalır (oyun jargonu yok).
+  Oyunlar geniş 16:9 kartlarla öne çıkar; modeller/tasarımlar kare galeri.
 - Sayfa geçişleri tarayıcının View Transition API'si (`@view-transition`). Astro `ClientRouter` **kullanılmıyor**:
   script'ler sayfa yüklemesinde bir kez çalışır.
 - Kolon şablonu olmayan `.grid` varsayılan `minmax(0,1fr)` (global.css). Çok kolonlularda da `minmax(0,Nfr)`;

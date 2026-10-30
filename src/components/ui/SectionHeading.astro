@@ -1,15 +1,14 @@
 ---
-/** Numaralı bölüm başlığı: "01 — Projeler" */
+/** Bölüm başlığı: küçük pixel blok + başlık. */
 interface Props {
-  number: number;
   title: string;
   id?: string;
 }
 
-const { number, title, id } = Astro.props;
+const { title, id } = Astro.props;
 ---
 
-<div class="mb-10 flex items-baseline gap-4 border-t border-line pt-6 md:mb-14">
-  <span class="font-mono text-sm text-accent-text" aria-hidden="true">{String(number).padStart(2, '0')} —</span>
-  <h2 id={id} class="text-4xl font-medium md:text-6xl">{title}</h2>
+<div class="mb-10 flex items-center gap-4 md:mb-14">
+  <span class="px-marker text-4xl md:text-6xl" aria-hidden="true"></span>
+  <h2 id={id} class="text-4xl md:text-6xl">{title}</h2>
 </div>

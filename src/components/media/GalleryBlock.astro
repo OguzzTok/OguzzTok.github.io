@@ -36,7 +36,7 @@ const labels = JSON.stringify({
       items.map(({ img, full }) => (
         <a
           href={full.src}
-          class="group block overflow-hidden rounded-sm bg-surface-2"
+          class="px-frame group block overflow-hidden bg-surface-2 hover:[--frame-color:var(--accent-text)]"
           data-gallery-item
           data-width={full.width}
           data-height={full.height}
@@ -47,7 +47,7 @@ const labels = JSON.stringify({
             alt={full.alt}
             widths={single ? [768, 1152, 1536] : [320, 480, 720]}
             sizes={single ? '(min-width: 1024px) 760px, 100vw' : '(min-width: 1024px) 250px, 50vw'}
-            class:list={['w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]', !single && 'aspect-video']}
+            class:list={['w-full object-cover', !single && 'aspect-video']}
             loading="lazy"
           />
         </a>

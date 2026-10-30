@@ -15,19 +15,19 @@ const t = useTranslations(locale);
 const site = await getSite();
 ---
 
-<header class="sticky top-0 z-40 border-b border-line bg-bg/85 backdrop-blur-md">
+<header class="sticky top-0 z-40 border-b-[3px] border-line bg-bg">
   <div class="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 px-4 sm:px-6">
-    <a href={pagePath(locale)} class="py-4 font-display text-xl font-semibold tracking-tight">
+    <a href={pagePath(locale)} class="py-4 font-display text-xl font-bold text-accent-text">
       {site.name}
     </a>
 
     <!-- Mobilde ikinci satıra iner ve yatay kaydırılır; JS gerektirmez. -->
     <nav aria-label={t('nav.label')} class="order-last -mx-4 w-[calc(100%+2rem)] md:order-none md:mx-0 md:ml-auto md:w-auto">
-      <ul class="scroll-x-fade flex gap-5 px-4 pb-1.5 text-sm whitespace-nowrap md:gap-7 md:p-0 md:[mask-image:none]">
+      <ul class="scroll-x-fade flex gap-5 px-4 pb-1.5 font-display text-base whitespace-nowrap md:gap-6 md:p-0 md:[mask-image:none]">
         {
           SECTIONS.map((s) => (
             <li>
-              <a href={sectionPath(locale, s.id)} class="inline-block py-1.5 text-muted transition-colors hover:text-fg">
+              <a href={sectionPath(locale, s.id)} class="nav-link inline-block py-1.5 text-muted hover:text-fg">
                 {t(s.nav)}
               </a>
             </li>
@@ -42,3 +42,21 @@ const site = await getSite();
     </div>
   </div>
 </header>
+
+<style>
+  /* Üzerine gelince oyun menüsündeki gibi seçim oku; yer kaplamaz (metin kaymaz) */
+  .nav-link {
+    position: relative;
+  }
+  .nav-link::before {
+    content: '▸';
+    position: absolute;
+    left: -0.9em;
+    color: var(--accent-text);
+    opacity: 0;
+  }
+  .nav-link:hover::before,
+  .nav-link:focus-visible::before {
+    opacity: 1;
+  }
+</style>

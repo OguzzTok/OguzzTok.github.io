@@ -25,13 +25,13 @@ const href = isDetail ? projectHref(project, category, locale) : (fullImage ?? p
 ---
 
 <article class="group relative mb-16 grid gap-6 md:mb-20 md:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] md:items-center md:gap-10" data-featured>
-  <div class="relative aspect-video overflow-hidden rounded-sm bg-surface-2 shadow-card">
+  <div class="px-frame-drop relative aspect-video overflow-hidden bg-surface-2 transition-transform duration-100 group-hover:-translate-x-[3px] group-hover:-translate-y-[3px]">
     <Image
       src={data.cover.src}
       alt={l(data.cover.alt, locale)}
       widths={[640, 960, 1280, 1920]}
       sizes="(min-width: 1152px) 660px, (min-width: 768px) 60vw, 100vw"
-      class="size-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.02]"
+      class="size-full object-cover"
       loading={eager ? 'eager' : 'lazy'}
       fetchpriority={eager ? 'high' : undefined}
     />
