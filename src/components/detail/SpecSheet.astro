@@ -30,11 +30,11 @@ const rows = [
 ].filter((row) => row.value);
 ---
 
-<aside class="rounded-sm border border-line bg-surface p-6 lg:sticky lg:top-24" aria-labelledby="spec-title">
+<aside class="px-frame-drop self-start bg-surface p-6 lg:sticky lg:top-24" aria-labelledby="spec-title">
   <h2 id="spec-title" class="eyebrow">{t('spec.title')}</h2>
   <dl class="mt-5 grid grid-cols-[auto_1fr] gap-x-5 gap-y-3 text-sm">
     <dt class="text-muted">{t('spec.status')}</dt>
-    <dd><StatusBadge status={data.status} locale={locale} class="-my-1 border border-line" /></dd>
+    <dd><StatusBadge status={data.status} locale={locale} class="-my-1" /></dd>
     {
       rows.map((row) => (
         <>

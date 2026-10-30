@@ -14,7 +14,7 @@ interface Props {
 const { cover, trailer, title, locale } = Astro.props;
 ---
 
-<div class="mt-12 shadow-card">
+<div class="px-frame-drop mt-12">
   {
     trailer ? (
       <YouTubeEmbed video={trailer} title={title} locale={locale} cover={cover} id="trailer" eager />
@@ -24,7 +24,7 @@ const { cover, trailer, title, locale } = Astro.props;
         alt={cover.alt}
         widths={[768, 1152, 1536, 2304]}
         sizes="(min-width: 1152px) 1104px, 100vw"
-        class="aspect-video w-full rounded-sm bg-surface-2 object-cover"
+        class="aspect-video w-full bg-surface-2 object-cover"
         loading="eager"
         fetchpriority="high"
       />

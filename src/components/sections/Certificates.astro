@@ -18,11 +18,11 @@ const certificates = await getCertificates();
 <ul class="grid grid-cols-[minmax(0,1fr)] gap-6 md:grid-cols-2">
   {
     certificates.map(({ id, data }) => (
-      <li class="flex gap-5 rounded-sm border border-line bg-surface p-6" data-certificate={id}>
+      <li class="px-frame-drop flex gap-5 bg-surface p-6" data-certificate={id}>
         {data.logo ? (
-          <Image src={data.logo} alt="" width={112} class="size-14 shrink-0 rounded-sm bg-surface-2 object-contain p-1" />
+          <Image src={data.logo} alt="" width={112} class="size-14 shrink-0 bg-surface-2 object-contain p-1" />
         ) : (
-          <span class="grid size-14 shrink-0 place-items-center rounded-sm bg-accent-soft font-display text-xl text-accent-text" aria-hidden="true">
+          <span class="px-frame grid size-14 shrink-0 place-items-center bg-accent font-display text-xl font-bold text-accent-on [--frame-color:var(--drop)]" aria-hidden="true">
             {initials(data.issuer)}
           </span>
         )}

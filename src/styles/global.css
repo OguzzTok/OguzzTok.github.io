@@ -1,46 +1,62 @@
 @import 'tailwindcss';
 
 /*
- * Tasarım token'ları. Vurgu rengi TEK yerden gelir: --accent.
- * Diğer vurgu tonları (yazı, dolgu, yumuşak zemin) ondan türetilir; iki temada da kontrast korunur.
+ * Pixel tasarım token'ları. İki tema: gece (varsayılan, koyu) ve gündüz (açık).
+ * Vurgu rengi tek yerden gelir: --accent (lamba sarısı; buton dolgusu). Link/vurgu yazısı rengi her temada
+ * kontrast için ayrı: --accent-text. Pixel çerçeveler --frame, sert gölge --drop ile çizilir.
  */
 :root {
-  --accent: #3d5afe;
+  --accent: #ffcf5a;
+  --px: 3px; /* bir "pixel" kalınlığı: çerçeve, gölge */
 
-  /* Koyu tema (varsayılan) */
-  --bg: #131211;
-  --surface: #1c1a18;
-  --surface-2: #262320;
-  --fg: #ede6da;
-  --muted: #a8a091;
-  --line: color-mix(in oklab, var(--fg) 14%, transparent);
-  --accent-text: color-mix(in oklab, var(--accent) 55%, white);
+  /* Gece (varsayılan) */
+  --bg: #120e22;
+  --surface: #1a1430;
+  --surface-2: #271f45;
+  --fg: #efe9ff;
+  --muted: #ada3cf;
+  --line: #3a2f66;
+  --frame: #4c3d82;
+  --frame-strong: #efe9ff;
+  --drop: #06040d;
+  --accent-text: var(--accent);
   --accent-fill: var(--accent);
-  --accent-on: #ffffff;
-  --accent-soft: color-mix(in oklab, var(--accent) 22%, transparent);
-  --shadow: 0 1px 0 color-mix(in oklab, var(--fg) 6%, transparent), 0 20px 40px -24px rgb(0 0 0 / 0.6);
+  --accent-on: #120e22;
+  --accent-soft: color-mix(in oklab, var(--accent) 16%, transparent);
+  --teal: #5fe0c8;
+  --pink: #ff6b8b;
 
   /* Proje durum rozetleri (anlamsal renkler; vurgu rengi değil) */
-  --status-released: #5fd08a;
+  --status-released: #5fe0c8;
   --status-completed: #b48cf2;
-  --status-in-progress: #f2b84b;
-  --status-prototype: #b3a998;
-  --status-jam: color-mix(in oklab, var(--accent) 55%, white);
+  --status-in-progress: #ffcf5a;
+  --status-prototype: #ada3cf;
+  --status-jam: #ff6b8b;
   color-scheme: dark;
 }
 
 :root[data-theme='light'] {
-  --bg: #f4efe6;
-  --surface: #fbf8f2;
-  --surface-2: #ece5d8;
-  --fg: #1a1816;
-  --muted: #5d564c;
-  --line: color-mix(in oklab, var(--fg) 14%, transparent);
-  --accent-text: color-mix(in oklab, var(--accent) 80%, black);
-  --accent-fill: var(--accent);
-  --accent-on: #ffffff;
-  --accent-soft: color-mix(in oklab, var(--accent) 14%, transparent);
-  --shadow: 0 1px 0 color-mix(in oklab, var(--fg) 6%, transparent), 0 20px 40px -28px rgb(60 40 20 / 0.35);
+  /* Gündüz */
+  --bg: #f4eedd;
+  --surface: #fffaf0;
+  --surface-2: #ebe2cb;
+  --fg: #1d1730;
+  --muted: #5c536f;
+  --line: #d6c9a6;
+  --frame: #1d1730;
+  --frame-strong: #1d1730;
+  --drop: #1d1730;
+  --accent-text: #6c3bb0;
+  --accent-on: #1d1730;
+  --accent-soft: color-mix(in oklab, var(--accent) 35%, transparent);
+  --teal: #1f9e86;
+  --pink: #e0476b;
+
+  --status-released: #1f9e86;
+  --status-completed: #8a5cd6;
+  --status-in-progress: #d99a00;
+  --status-prototype: #8c8270;
+  --status-jam: #e0476b;
   color-scheme: light;
 }
 
@@ -51,16 +67,21 @@
   --color-fg: var(--fg);
   --color-muted: var(--muted);
   --color-line: var(--line);
+  --color-frame: var(--frame);
   --color-accent: var(--accent-fill);
   --color-accent-text: var(--accent-text);
   --color-accent-on: var(--accent-on);
   --color-accent-soft: var(--accent-soft);
+  --color-teal: var(--teal);
+  --color-pink: var(--pink);
 
-  --font-display: 'Fraunces Variable', ui-serif, Georgia, serif;
+  --font-display: 'Pixelify Sans Variable', ui-monospace, monospace;
   --font-sans: 'Instrument Sans Variable', ui-sans-serif, system-ui, sans-serif;
   --font-mono: 'JetBrains Mono Variable', ui-monospace, 'Cascadia Code', monospace;
 
-  --shadow-card: var(--shadow);
+  /* Pixel dünyada yuvarlak köşe yok */
+  --radius-sm: 0px;
+  --shadow-card: calc(var(--px) * 2) calc(var(--px) * 2) 0 0 var(--drop);
 }
 
 @layer base {
@@ -96,9 +117,9 @@
   h2,
   h3 {
     @apply font-display text-balance;
-    font-optical-sizing: auto;
-    letter-spacing: -0.015em;
-    line-height: 1.1;
+    font-weight: 600;
+    letter-spacing: 0;
+    line-height: 1.05;
   }
 
   ::selection {
@@ -107,9 +128,8 @@
   }
 
   :focus-visible {
-    outline: 2px solid var(--accent-text);
-    outline-offset: 3px;
-    border-radius: 2px;
+    outline: var(--px) solid var(--accent-text);
+    outline-offset: var(--px);
   }
 
   a {
@@ -117,25 +137,57 @@
   }
 }
 
+/*
+ * Pixel çerçeve: dört kenar dışarıda, köşeler boş kalır (çentikli pixel köşe).
+ * Renk --frame-color ile değişir (varsayılan --frame); -drop sürümü sağ alta sert gölge ekler.
+ * @utility: hem class olarak hem de @apply ile kullanılabilir.
+ */
+@utility px-frame {
+  box-shadow:
+    0 calc(var(--px) * -1) 0 0 var(--frame-color, var(--frame)),
+    0 var(--px) 0 0 var(--frame-color, var(--frame)),
+    calc(var(--px) * -1) 0 0 0 var(--frame-color, var(--frame)),
+    var(--px) 0 0 0 var(--frame-color, var(--frame));
+}
+@utility px-frame-drop {
+  box-shadow:
+    0 calc(var(--px) * -1) 0 0 var(--frame-color, var(--frame)),
+    0 var(--px) 0 0 var(--frame-color, var(--frame)),
+    calc(var(--px) * -1) 0 0 0 var(--frame-color, var(--frame)),
+    var(--px) 0 0 0 var(--frame-color, var(--frame)),
+    calc(var(--px) * 2) calc(var(--px) * 2) 0 0 var(--drop);
+}
+
 @layer components {
-  /* Küçük mono etiket: tarih, meta, numara */
+  /* Küçük etiket: tarih, meta */
   .eyebrow {
-    @apply font-mono text-xs tracking-[0.14em] text-muted uppercase;
+    @apply font-display text-sm text-muted;
   }
 
   .link {
-    @apply text-accent-text underline decoration-1 underline-offset-4 hover:decoration-2;
+    @apply text-accent-text underline decoration-2 underline-offset-4 hover:decoration-[3px];
   }
 
   .btn {
-    @apply inline-flex items-center gap-2 rounded-sm px-5 py-2.5 text-sm font-semibold transition-colors;
+    @apply px-frame-drop inline-flex items-center gap-2 px-5 py-2.5 font-display text-base font-semibold;
+    transition: transform 80ms steps(2);
+  }
+  .btn:hover {
+    transform: translate(calc(var(--px) * -1), calc(var(--px) * -1));
+  }
+  .btn:active {
+    transform: translate(var(--px), var(--px));
   }
   /* Kullanım: class="btn btn-primary" */
   .btn-primary {
-    @apply bg-accent text-accent-on hover:brightness-110;
+    @apply bg-accent text-accent-on;
+    --frame-color: var(--drop);
   }
   .btn-ghost {
-    @apply border border-line text-fg hover:border-fg;
+    @apply bg-surface text-fg;
+  }
+  .btn-ghost:hover {
+    --frame-color: var(--accent-text);
   }
 
   /* Yatay kaydırılan satır (mobil menü, sekmeler): çubuk gizli, sağ kenar solar */
@@ -149,14 +201,11 @@
   }
 
   .status-badge {
-    @apply inline-flex items-center gap-1.5 rounded-sm px-2 py-1 font-mono text-[0.68rem] font-medium tracking-[0.12em] uppercase;
-    background: color-mix(in oklab, var(--bg) 82%, transparent);
-    color: var(--fg);
-    backdrop-filter: blur(6px);
+    @apply px-frame inline-flex items-center gap-2 bg-surface px-2 py-0.5 font-display text-xs font-semibold text-fg;
   }
   .status-badge::before {
     content: '';
-    @apply size-1.5 rounded-full;
+    @apply size-2;
     background: var(--dot);
   }
   .status-badge[data-status='released'] { --dot: var(--status-released); }
@@ -167,13 +216,23 @@
 
   /* Filtre çipleri ve etiketler */
   .chip {
-    @apply inline-flex items-center rounded-sm border border-line px-2.5 py-1 font-mono text-xs tracking-wide text-muted transition-colors;
+    @apply px-frame inline-flex items-center bg-surface px-2.5 py-0.5 font-display text-sm text-muted;
+    --frame-color: var(--line);
+    margin: var(--px);
   }
   button.chip:hover {
-    @apply border-fg text-fg;
+    @apply text-fg;
+    --frame-color: var(--frame-strong);
   }
   .chip[aria-pressed='true'] {
-    @apply border-accent bg-accent text-accent-on;
+    @apply bg-accent text-accent-on;
+    --frame-color: var(--drop);
+  }
+
+  /* Bölüm başlığının yanındaki küçük pixel blok */
+  .px-marker {
+    @apply inline-block size-[0.42em] shrink-0 bg-accent;
+    box-shadow: var(--px) var(--px) 0 0 var(--drop);
   }
 
   /*
@@ -185,14 +244,14 @@
   }
   .project-body h2 {
     counter-increment: section;
-    @apply mt-16 mb-5 flex items-baseline gap-4 text-3xl font-medium first:mt-0 md:text-4xl;
+    @apply mt-16 mb-5 flex items-baseline gap-4 text-3xl first:mt-0 md:text-4xl;
   }
   .project-body h2::before {
     content: counter(section, decimal-leading-zero);
-    @apply font-mono text-sm font-normal tracking-normal text-accent-text;
+    @apply font-display text-base font-normal text-accent-text;
   }
   .project-body h3 {
-    @apply mt-10 mb-3 text-2xl font-medium;
+    @apply mt-10 mb-3 text-2xl;
   }
   .project-body p,
   .project-body ul,
@@ -202,7 +261,7 @@
     @apply mt-4;
   }
   .project-body ul {
-    @apply list-disc pl-6 marker:text-accent-text;
+    @apply list-[square] pl-6 marker:text-accent-text;
   }
   .project-body ol {
     @apply list-decimal pl-6 marker:text-muted;
@@ -211,7 +270,7 @@
     @apply mt-1.5;
   }
   .project-body a {
-    @apply text-accent-text underline decoration-1 underline-offset-4 hover:decoration-2;
+    @apply text-accent-text underline decoration-2 underline-offset-4 hover:decoration-[3px];
   }
   .project-body em {
     @apply text-muted;
@@ -220,13 +279,13 @@
     @apply font-semibold;
   }
   .project-body blockquote {
-    @apply border-l-2 border-accent pl-5 text-muted italic;
+    @apply border-l-[6px] border-accent pl-5 text-muted italic;
   }
   .project-body :not(pre) > code {
-    @apply rounded-sm bg-surface-2 px-1.5 py-0.5 font-mono text-[0.9em];
+    @apply bg-surface-2 px-1.5 py-0.5 font-mono text-[0.9em];
   }
   .project-body pre {
-    @apply overflow-x-auto rounded-sm border border-line p-4 text-sm;
+    @apply px-frame overflow-x-auto p-4 text-sm;
   }
 
   /* Kod blokları (Shiki): koyu tema varsayılan, açık temada açık renkler */
@@ -250,6 +309,12 @@
   }
   .prose-body p + p {
     @apply mt-4;
+  }
+
+  /* Zemin şeridi: hero sahnesinin zemininin devamı (sayaçlar, footer) */
+  .px-ground {
+    background: var(--surface-2);
+    border-top: var(--px) dashed var(--teal);
   }
 }
 

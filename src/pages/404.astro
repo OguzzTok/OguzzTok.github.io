@@ -13,7 +13,7 @@ const en = useTranslations('en');
 
 <BaseLayout locale="en" title={en('notFound.title')} noindex chrome={false}>
   <div class="mx-auto flex min-h-dvh max-w-6xl flex-col justify-center px-4 py-16 sm:px-6">
-    <p class="font-mono text-sm text-accent-text" aria-hidden="true">404</p>
+    <p class="font-display text-2xl text-accent-text" aria-hidden="true">404</p>
     <div class="mt-6 grid gap-12 md:grid-cols-2 md:gap-16">
       {
         messages.map(({ locale, t }, i) => (

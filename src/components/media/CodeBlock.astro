@@ -17,7 +17,7 @@ interface Props {
 const { code, lang, fileName, locale, caption, id } = Astro.props;
 ---
 
-<figure class="my-12 overflow-hidden rounded-sm border border-line">
+<figure class="px-frame-drop my-12 overflow-hidden">
   <div class="flex items-center justify-between gap-4 border-b border-line bg-surface px-4 py-2">
     <span class="font-mono text-xs text-muted">{fileName}</span>
     <CopyButton locale={locale} target={`#${id} pre`} />

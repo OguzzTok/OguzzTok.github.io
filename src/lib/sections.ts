@@ -1,5 +1,5 @@
 /**
- * Ana sayfa bölümleri: sıra burada belirlenir. Header menüsü ve bölüm numaraları ("01 — Projeler") buradan gelir.
+ * Ana sayfa bölümleri: sıra burada belirlenir. Header menüsü ve bölüm başlıkları buradan gelir.
  */
 import type { UiKey } from './i18n';
 
@@ -12,8 +12,3 @@ export const SECTIONS = [
 ] as const satisfies readonly { id: string; nav: UiKey; title: UiKey }[];
 
 export type SectionId = (typeof SECTIONS)[number]['id'];
-
-/** Bölüm numarası: 1'den başlar. */
-export function sectionNumber(id: SectionId): number {
-  return SECTIONS.findIndex((s) => s.id === id) + 1;
-}

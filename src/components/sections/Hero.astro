@@ -1,5 +1,8 @@
 ---
-/** Ana sayfa girişi: üst başlık, isim, kısa tanıtım, iki buton, altında sayaçlar. */
+/**
+ * Ana sayfa girişi: pixel sahne (scripts/hero-scene.ts) üstünde üst başlık, isim, kısa tanıtım, iki buton.
+ * Sahnenin zemini aşağıdaki sayaç şeridine devam eder.
+ */
 import LocalizedText from '../ui/LocalizedText.astro';
 import Stats from './Stats.astro';
 import { getSite } from '../../lib/content';
@@ -15,15 +18,45 @@ const t = useTranslations(locale);
 const site = await getSite();
 ---
 
-<section class="mx-auto max-w-6xl px-4 pt-16 sm:px-6 md:pt-28" aria-labelledby="hero-title">
-  <LocalizedText value={site.eyebrow} locale={locale} as="p" class="eyebrow mb-6 text-accent-text" />
-  <h1 id="hero-title" class="text-[clamp(3.5rem,12vw,9.5rem)] leading-[0.92] font-medium tracking-[-0.035em]">
-    {site.name}
-  </h1>
-  <LocalizedText value={site.intro} locale={locale} as="p" class="mt-8 max-w-[46ch] text-lg text-muted md:text-2xl md:leading-snug" />
-  <div class="mt-10 flex flex-wrap gap-3">
-    <a href={sectionPath(locale, 'projects')} class="btn btn-primary">{t('hero.cta.projects')} <span aria-hidden="true">↓</span></a>
-    <a href={sectionPath(locale, 'contact')} class="btn btn-ghost">{t('hero.cta.contact')}</a>
+<section aria-labelledby="hero-title">
+  <div class="hero relative overflow-hidden">
+    <canvas class="pointer-events-none absolute inset-0 size-full" data-hero-scene aria-hidden="true"></canvas>
+    <div class="relative mx-auto max-w-6xl px-4 pt-16 sm:px-6 md:pt-24">
+      <LocalizedText value={site.eyebrow} locale={locale} as="p" class="eyebrow mb-5 text-accent-text" />
+      <h1 id="hero-title" class="hero-title text-[clamp(3.5rem,11vw,8.5rem)] leading-[0.9] font-bold">
+        {site.name}
+      </h1>
+      <LocalizedText value={site.intro} locale={locale} as="p" class="mt-7 max-w-[42ch] text-lg md:text-xl md:leading-snug" />
+      <div class="mt-9 flex flex-wrap gap-4">
+        <a href={sectionPath(locale, 'projects')} class="btn btn-primary">{t('hero.cta.projects')} <span aria-hidden="true">↓</span></a>
+        <a href={sectionPath(locale, 'contact')} class="btn btn-ghost">{t('hero.cta.contact')}</a>
+      </div>
+    </div>
   </div>
   <Stats locale={locale} />
 </section>
+
+<style>
+  /* Altta zemin + karakter için yer: dar ekranda karakter metnin altında durur */
+  .hero {
+    min-height: min(86svh, 780px);
+    padding-bottom: 210px;
+  }
+  @media (min-width: 768px) {
+    .hero {
+      padding-bottom: 150px;
+    }
+  }
+  .hero canvas {
+    image-rendering: pixelated;
+  }
+  /* Pixel gölge: isim zeminden ayrışsın (blur yok) */
+  .hero-title {
+    text-shadow: 5px 5px 0 var(--pink);
+  }
+</style>
+
+<script>
+  import { initHeroScene } from '../../scripts/hero-scene';
+  initHeroScene();
+</script>
