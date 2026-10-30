@@ -21,6 +21,7 @@ links:
   itch: ''
   github: ''
   trailer: ''                # YouTube linki veya video id'si
+  behance: ''
   website: ''
 spec:
   genre: { en: '', tr: '' }

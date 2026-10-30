@@ -17,6 +17,7 @@ tools: []
 links:
   sketchfab: ''
   artstation: ''
+  behance: ''
 # model:                     # varsa lightbox'ta "3D Görüntüle" butonu çıkar (.glb önerilir, 20 MB altı)
 #   src: ./model.glb
 #   tris: 0

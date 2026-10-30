@@ -35,6 +35,34 @@ test.describe('Lightbox', () => {
     await expect(page.locator('html')).not.toHaveClass(/lb-open/);
   });
 
+  test('kapat ve yakınlaştır düğmeleri bilgi panelinin altında kalmaz; kapat düğmesi çalışır', async ({ page }) => {
+    const { trigger } = await firstLightboxCard(page);
+    await trigger.click();
+    await waitForLightbox(page);
+
+    for (const selector of ['.pswp__button--close', '.pswp__button--zoom']) {
+      const onTop = await page.locator(selector).evaluate((button) => {
+        const r = button.getBoundingClientRect();
+        return button.contains(document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2));
+      });
+      expect(onTop, `${selector} üstte değil`).toBe(true);
+    }
+    await page.locator('.pswp__button--close').click();
+    await expect(page.getByRole('dialog')).toHaveCount(0);
+  });
+
+  test('projenin linkleri panelde görünür ve doğru adrese gider', async ({ page }) => {
+    await page.goto('en/projects/');
+    const project = (await lightboxData(page)).find((p) => p.links.length > 0);
+    test.skip(!project, 'Linki olan lightbox projesi yok');
+
+    await page.goto(`en/projects/?item=${project!.slug}`);
+    await waitForLightbox(page);
+    for (const link of project!.links) {
+      await expect(page.locator(`.lb-link[href="${link.url}"]`)).toContainText(link.label);
+    }
+  });
+
   test('ok tuşlarıyla görseller ve projeler arasında geçilir', async ({ page }) => {
     const { trigger } = await firstLightboxCard(page);
     const projects = await lightboxData(page);

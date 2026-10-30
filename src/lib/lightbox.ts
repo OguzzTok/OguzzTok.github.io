@@ -62,6 +62,7 @@ export async function buildLightboxProjects(
       const links = [
         data.links.sketchfab && { label: t('link.sketchfab'), url: data.links.sketchfab },
         data.links.artstation && { label: t('link.artstation'), url: data.links.artstation },
+        data.links.behance && { label: t('link.behance'), url: data.links.behance },
         data.links.website && { label: t('link.website'), url: data.links.website },
       ].filter((x): x is { label: string; url: string } => Boolean(x));
 
