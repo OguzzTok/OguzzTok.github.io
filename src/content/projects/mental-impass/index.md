@@ -4,8 +4,8 @@ summary:
   en: A hallucination-themed platformer.
   tr: Halüsinasyon temalı bir platform oyunu.
 category: games
-status: released
-date: 2025-12-01 # kullanıcı sadece ayı verdi (Aralık 2025); gün doğrulanmalı
+status: completed # bitti ama hiçbir yerde yayınlanmadı
+date: 2025-12-01 # sadece ay/yıl gösterilir (Aralık 2025)
 order: 1
 featured: true
 draft: false

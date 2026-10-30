@@ -30,7 +30,7 @@ const singleton = (path: string) =>
 const relativeFile = (ext: RegExp, hint: string) =>
   z.string().regex(/^\.\//, 'Yol ./ ile başlamalı').regex(ext, hint);
 
-export const PROJECT_STATUSES = ['released', 'in-progress', 'prototype', 'jam'] as const;
+export const PROJECT_STATUSES = ['released', 'completed', 'in-progress', 'prototype', 'jam'] as const;
 
 // ---------- Kategoriler (sekmeler) ----------
 

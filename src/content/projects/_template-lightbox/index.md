@@ -4,7 +4,7 @@
 title: { en: Model title, tr: Model adı }
 summary: { en: One sentence., tr: Tek cümle. }
 category: models
-status: released             # released | in-progress | prototype | jam
+status: released             # released | completed | in-progress | prototype | jam
 date: 2026-01-01
 draft: true
 cover:
