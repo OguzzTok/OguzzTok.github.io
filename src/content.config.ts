@@ -115,6 +115,7 @@ const projects = defineCollection({
           trailer: text, // YouTube linki veya video id'si
           sketchfab: optionalUrl,
           artstation: optionalUrl,
+          behance: optionalUrl,
           website: optionalUrl,
         })
         .default({}),

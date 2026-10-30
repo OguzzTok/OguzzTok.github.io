@@ -24,6 +24,7 @@ export interface LightboxProjectData {
   slug: string;
   title: string;
   images: unknown[];
+  links: { label: string; url: string }[];
   model?: { url: string };
 }
 

@@ -90,7 +90,8 @@ değiştir). `npm run samples` çalıştırma: silinen örnek projelerin görsel
    `npx @gltf-transform/cli optimize girdi.glb model.glb --compress draco --texture-compress webp`
 4. `index.md`: `draft: false`. Zorunlu: `title`, `summary`, `category` (`models`/`designs`), `status`, `date`,
    `cover.src` + `cover.alt`. Galeri: her görsel `{ src, alt }`. `tools` → `src/data/tools.yaml` id'leri (yoksa önce
-   oraya ekle). `tags` serbest metin (büyük/küçük harf fark etmez). Sketchfab/ArtStation/website → `links`.
+   oraya ekle). `tags` serbest metin (büyük/küçük harf fark etmez). Sketchfab/ArtStation/Behance/website → `links`
+   (lightbox panelinde "… gör ↗" linkleri olarak çıkar).
 5. `en.md` / `tr.md` **gerekmez**.
 
 ### Yeni proje — detail modu (Oyunlar)
@@ -98,8 +99,8 @@ değiştir). `npm run samples` çalıştırma: silinen örnek projelerin görsel
 1. `src/content/projects/_template-detail/` → `src/content/projects/<slug>/` kopyala.
 2. Görseller: `cover.jpg` (**16:9**; detay sayfasının büyük görseli ve kart kapağı), galeri `01.jpg`…
 3. `index.md`: `draft: false`, zorunlu alanlar yukarıdaki gibi, `category: games`.
-   - `links`: `steam`, `itch`, `github`, `trailer` (YouTube linki veya id), `website`. Boşlar görünmez.
-     İlk dolu olan birincil buton olur; sıra: itch → steam → fragman → github → website.
+   - `links`: `steam`, `itch`, `github`, `trailer` (YouTube linki veya id), `behance`, `website`. Boşlar görünmez.
+     İlk dolu olan birincil buton olur; sıra: itch → steam → fragman → github → behance → website.
      `trailer` doluysa büyük görsel tıklayınca oynayan videoya dönüşür, "Fragmanı izle" butonu çıkar.
    - `spec`: `genre`, `engine`, `platforms`, `team` (1 = solo), `duration`, `publisher`. Boşlar gizlenir.
      Künyede durum, yayın tarihi (`date`) ve araçlar (`tools`) otomatik gösterilir.

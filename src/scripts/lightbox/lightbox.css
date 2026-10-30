@@ -186,9 +186,12 @@
   object-fit: cover;
 }
 
-/* Sağ ok paneli kapatmasın */
+/* Sağ ok ve üst çubuk (yakınlaştır/kapat) bilgi panelinin altında kalmasın */
 .pswp--portfolio .pswp__button--arrow--next {
   right: 380px;
+}
+.pswp--portfolio .pswp__top-bar {
+  width: calc(100% - 380px);
 }
 
 /* ---------- 3D görünüm ---------- */
@@ -290,5 +293,8 @@
   }
   .pswp--portfolio .pswp__button--arrow--next {
     right: 0;
+  }
+  .pswp--portfolio .pswp__top-bar {
+    width: 100%;
   }
 }

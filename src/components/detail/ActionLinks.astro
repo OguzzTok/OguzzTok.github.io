@@ -18,6 +18,7 @@ const actions = (
     { key: 'action.steam', href: links.steam },
     { key: 'action.trailer', href: trailer, trailer: true },
     { key: 'action.github', href: links.github },
+    { key: 'action.behance', href: links.behance },
     { key: 'action.website', href: links.website },
   ] satisfies { key: UiKey; href: string | undefined; trailer?: boolean }[]
 ).filter((a) => a.href);
