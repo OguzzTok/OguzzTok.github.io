@@ -19,7 +19,11 @@ export default defineConfig({
     baseURL,
     trace: 'retain-on-failure',
   },
-  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
+  projects: [
+    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+    // Safari motoru: sadece hero sahnesi (canvas, script/stil yükleme sırası tarayıcıya göre değişiyor)
+    { name: 'webkit-iphone', use: { ...devices['iPhone 13'] }, testMatch: /hero\.spec\.ts/ },
+  ],
   webServer: {
     command: `npm run preview -- --port ${PORT}`,
     url: baseURL,

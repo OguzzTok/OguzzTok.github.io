@@ -50,7 +50,7 @@ jobs:
         run: npm run check:sizes
 
       - name: Playwright tarayıcısı
-        run: npx playwright install --with-deps chromium
+        run: npx playwright install --with-deps chromium webkit
 
       - name: Testler
         run: npm test

@@ -80,6 +80,24 @@ test.describe('404 ve SEO dosyaları', () => {
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex');
   });
 
+  test('paylaşım görseli: ana sayfada dilin pixel görseli, proje sayfasında projenin kapağı', async ({ page, request }) => {
+    for (const locale of ['en', 'tr']) {
+      await page.goto(`${locale}/`);
+      const og = page.locator('meta[property="og:image"]');
+      await expect(og).toHaveAttribute('content', new RegExp(`/og-${locale}\\..*\\.png$`));
+      await expect(page.locator('meta[property="og:image:width"]')).toHaveAttribute('content', '1200');
+      await expect(page.locator('meta[property="og:image:height"]')).toHaveAttribute('content', '630');
+      // Mutlak adres sitenin kendi alan adını gösterir; dosyanın kendisi build çıktısında var mı?
+      const file = new URL((await og.getAttribute('content'))!).pathname; // base yolunu zaten içerir
+      expect((await request.get(new URL(file, page.url()).href)).ok(), `${file} yok`).toBe(true);
+    }
+
+    const href = await firstDetailHref(page);
+    test.skip(!href, 'Detay modunda proje yok');
+    await page.goto(href!);
+    await expect(page.locator('meta[property="og:image"]')).not.toHaveAttribute('content', /\/og-(en|tr)\./);
+  });
+
   test('robots.txt ve sitemap erişilebilir', async ({ request }) => {
     const robots = await request.get('robots.txt');
     expect(robots.ok()).toBe(true);

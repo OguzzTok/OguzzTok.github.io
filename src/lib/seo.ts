@@ -2,15 +2,18 @@
  * Arama motoru ve paylaşım (Open Graph) yardımcıları.
  */
 import { getAbout, getSite } from './content';
+import ogEn from '../assets/og/og-en.png';
+import ogTr from '../assets/og/og-tr.png';
 import { l, type Locale } from './i18n';
 import { socialLinks } from './profile';
-import { getFeatured, getProjects } from './projects';
 import { absoluteUrl, pagePath } from './urls';
 
-/** Kendi görseli olmayan sayfalarda paylaşım görseli: öne çıkan proje, yoksa ilk projenin kapağı. */
-export async function getDefaultShareImage(): Promise<ImageMetadata | undefined> {
-  const projects = await getProjects();
-  return (getFeatured(projects) ?? projects[0])?.data.cover.src;
+/**
+ * Kendi görseli olmayan sayfalarda (ana sayfa, projeler, 404) paylaşım görseli: hero sahnesinden üretilen
+ * 1200×630 PNG (scripts/make-og.mjs). Proje detay sayfaları kendi kapağını kullanır.
+ */
+export function getDefaultShareImage(locale: Locale): ImageMetadata {
+  return locale === 'tr' ? ogTr : ogEn;
 }
 
 /** Ana sayfa için schema.org Person verisi (Google'ın kişi bilgisi). */

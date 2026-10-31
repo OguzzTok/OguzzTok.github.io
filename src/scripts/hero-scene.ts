@@ -50,6 +50,18 @@ function setup(canvas: HTMLCanvasElement, hero: HTMLElement, ctx: CanvasRenderin
       fg: css('--fg'),
       star: css('--muted'),
     };
+    // Safari (WebKit) modül script'ini stil dosyası yüklenmeden çalıştırabilir: renkler boş gelir.
+    // O durumda sayfa tamamen yüklenince renkleri yeniden oku ve sahneyi yeniden çiz.
+    if (Object.values(colors).some((c) => !c)) {
+      addEventListener(
+        'load',
+        () => {
+          readTheme();
+          requestDraw();
+        },
+        { once: true },
+      );
+    }
     canvas.dataset.scene = scene;
   }
 
@@ -66,6 +78,7 @@ function setup(canvas: HTMLCanvasElement, hero: HTMLElement, ctx: CanvasRenderin
   }
 
   const px = (x: number, y: number, w: number, h: number, color: string) => {
+    if (!color) return; // geçersiz renk canvas'ta önceki rengi kullandırır; hiç çizmemek daha iyi
     ctx.fillStyle = color;
     ctx.fillRect(Math.round(x), Math.round(y), w, h);
   };

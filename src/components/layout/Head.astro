@@ -23,8 +23,9 @@ const fullTitle = title ? `${title} — ${site.name}` : site.name;
 const metaDescription = description || l(site.description, locale);
 const canonical = absoluteUrl(Astro.url.pathname);
 const alternates = LOCALES.map((lang) => ({ lang, href: absoluteUrl(alternatePath(Astro.url.pathname, lang)) }));
-const shareImage = image ?? (await getDefaultShareImage());
-const ogImage = shareImage ? await getImage({ src: shareImage, width: 1200, height: 630, format: 'jpg' }) : undefined;
+// Varsayılan görsel pixel art: PNG kalsın (JPG keskin kenarları bulanıklaştırır). Proje kapakları JPG.
+const shareImage = image ?? getDefaultShareImage(locale);
+const ogImage = await getImage({ src: shareImage, width: 1200, height: 630, format: image ? 'jpg' : 'png' });
 const ogLocale = (l: Locale) => (l === 'tr' ? 'tr_TR' : 'en_US');
 ---
 

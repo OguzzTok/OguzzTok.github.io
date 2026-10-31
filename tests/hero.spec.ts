@@ -31,6 +31,31 @@ test.describe('Hero pixel sahnesi', () => {
     await expect(page).toHaveURL(/#projects$/);
   });
 
+  test('sahne tema renkleriyle çizilir (karakterin kapüşonlusu, zemin çizgisi)', async ({ page }) => {
+    // Safari stil dosyası yüklenmeden script çalıştırınca renkler boş gelip gövde hiç çizilmiyordu.
+    for (const path of ['en/', 'tr/']) {
+      await page.goto(path);
+      await page.waitForLoadState('load');
+      const scene = page.locator('[data-hero-scene]');
+      await expect(scene).toHaveAttribute('data-ready', '');
+      for (const variable of ['--pink', '--teal']) {
+        await expect
+          .poll(() =>
+            scene.evaluate((c: HTMLCanvasElement, name) => {
+              const hex = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+              const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
+              const data = c.getContext('2d')!.getImageData(0, 0, c.width, c.height).data;
+              let n = 0;
+              for (let i = 0; i < data.length; i += 4) if (data[i] === r && data[i + 1] === g && data[i + 2] === b) n++;
+              return n;
+            }, variable),
+            { message: `${path} sahnesinde ${variable} rengi yok` },
+          )
+          .toBeGreaterThan(5);
+      }
+    }
+  });
+
   test('hareketi azalt tercihinde de sahne çizilir', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('tr/');
