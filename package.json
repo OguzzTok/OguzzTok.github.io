@@ -13,6 +13,7 @@
     "check": "astro check",
     "samples": "node scripts/make-samples.mjs",
     "check:sizes": "node scripts/check-sizes.mjs",
+    "og": "node scripts/make-og.mjs",
     "test": "playwright test"
   },
   "dependencies": {

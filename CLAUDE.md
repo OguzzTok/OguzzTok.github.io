@@ -203,6 +203,7 @@ artstation, sketchfab, discord. Ekrandaki sıra `src/lib/profile.ts` → `SOCIAL
 | `npm test` | Playwright testleri (`dist/`'i 4322 portunda açar). **Önce `npm run build`** |
 | `npm run check:sizes` | Boyut kontrolü: dosya >20 MB uyarı, >90 MB hata; görsel >5 MB uyarı; site >1 GB hata |
 | `npm run samples` | Örnek yer tutucu görsel/glb/pdf üretir (sadece eksikleri; normalde gerekmez) |
+| `npm run og` | Paylaşım görselini (`src/assets/og/og-{en,tr}.png`, 1200×630) hero sahnesinden üretir. **Önce build**; sonra commit + tekrar build. İsim, `eyebrow` veya hero tasarımı değişince çalıştır |
 
 Ortam: Windows, Node 24 (`C:\Program Files\nodejs`). Bash'te `node` bulunamazsa
 `export PATH="/c/Program Files/nodejs:$PATH"`. GitHub CLI (`gh`) kurulu değil.
@@ -274,8 +275,8 @@ Test başarısızsa rapor "playwright-report" artifact'ında (7 gün). Kurulum a
   karakter; canvas, `aria-hidden`; hareketi azalt tercihinde animasyonsuz; ekranda değilken durur) + sayaçlar (sahnenin
   zemininde), sonra `sections.ts` sırasıyla Projeler, Hakkımda, Sertifikalar, İndirmeler, İletişim.
 - **404:** iki dilli, header'sız, `noindex`.
-- **SEO:** title/description, canonical, hreflang (en, tr, x-default), Open Graph (proje kapağı; diğer sayfalarda öne çıkan
-  projenin kapağı), ana sayfada `Person` JSON-LD, `robots.txt`, iki dilli sitemap.
+- **SEO:** title/description, canonical, hreflang (en, tr, x-default), Open Graph (proje detayında proje kapağı JPG;
+  diğer sayfalarda dilin pixel paylaşım görseli PNG, `npm run og` ile üretilir; WhatsApp eski önizlemeyi bir süre önbellekte tutar), ana sayfada `Person` JSON-LD, `robots.txt`, iki dilli sitemap.
 - **Paket boyutları:** sekme/filtre ~6 KB her sayfada; hero sahnesi ~4 KB sadece ana sayfada; PhotoSwipe ~65 KB ilk tıklamada; model-viewer ~1 MB
   sadece 3D istenince.
 
@@ -306,6 +307,7 @@ Test başarısızsa rapor "playwright-report" artifact'ında (7 gün). Kurulum a
 - Lightbox projeleri için ayrı sayfa yok: `?item=` linki paylaşılınca önizleme görseli kategori sayfasınınki olur.
 - `yearsSince` sayacı build anında hesaplanır; yıl dönünce güncellenmesi için bir push (veya elle workflow) gerekir.
 - Orijinal görseller `dist/`'e de kopyalanır (Astro davranışı); site boyutunu `check:sizes` izler.
-- Testler sadece Chromium'da; Firefox/Safari otomatik test edilmiyor.
+- Testler Chromium'da; hero sahnesi testleri ayrıca WebKit'te (iPhone 13 emülasyonu, Safari motoru). Firefox test edilmiyor.
+  Safari modül script'ini stil dosyası yüklenmeden çalıştırabilir: script'te CSS değişkeni okuyorsan boş gelebileceğini hesaba kat.
 - Sosyal linkler ikonsuz (marka ikonu paketi eklenmedi). YouTube bloğunda oynatmadan önce kapak yok (dış istek olmasın diye).
 - E-posta düz metin: spam botları toplayabilir.
